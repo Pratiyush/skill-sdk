@@ -1,0 +1,45 @@
+{
+  "name": "@skillscraft/core",
+  "version": "0.9.0",
+  "description": "Parse, validate, and lint Agent Skills (agentskills.io)",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@skillscraft/spec": "workspace:*",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "vitest": "^3.1.0",
+    "eslint": "^9.24.0",
+    "typescript": "^5.8.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pratiyush/agentic-skills-framework",
+    "directory": "packages/core"
+  },
+  "keywords": ["agent-skills", "agentskills", "validator", "linter", "parser", "ai-agents"]
+}

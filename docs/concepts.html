@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Skills Concepts — Agentic Skills Framework</title>
+  <meta name="description" content="Deep guide to Agent Skills: progressive disclosure, activation lifecycle, frontmatter spec, scripts, cross-agent compatibility, security, and best practices.">
+  <meta name="keywords" content="agent skills, SKILL.md, progressive disclosure, AI agents, Claude Code, GitHub Copilot, Cursor, OpenAI Codex, skill specification">
+  <meta property="og:title" content="Agent Skills Concepts — Fundamentals & Depth">
+  <meta property="og:description" content="Everything you need to understand about Agent Skills: how they work, how agents load them, and how to build great ones.">
+  <style>
+    :root {
+      --purple: #7C3AED;
+      --purple-light: #A78BFA;
+      --purple-dim: #4C1D95;
+      --bg: #0f0f23;
+      --bg-card: #1a1a2e;
+      --bg-code: #131327;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --cyan: #06b6d4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    a { color: var(--purple-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    nav { border-bottom: 1px solid var(--border); padding: 16px 0; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    nav a { color: var(--text-muted); font-size: 0.9rem; }
+    nav .brand { color: var(--purple-light); font-weight: 600; font-size: 1rem; }
+
+    /* Hero */
+    .hero { padding: 60px 0 40px; text-align: center; }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
+    .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+    /* TOC */
+    .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px 32px; margin: 0 0 48px; }
+    .toc h2 { font-size: 1rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin: 6px 0; }
+    .toc a { color: var(--text); font-size: 0.95rem; }
+
+    /* Sections */
+    section { margin: 48px 0; }
+    h2 { font-size: 1.6rem; margin-bottom: 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+    h2:first-of-type { border-top: none; padding-top: 0; }
+    h3 { font-size: 1.2rem; margin: 24px 0 12px; color: var(--purple-light); }
+    h4 { font-size: 1rem; margin: 16px 0 8px; }
+    p { margin: 12px 0; }
+    ul, ol { margin: 12px 0; padding-left: 24px; }
+    li { margin: 4px 0; }
+
+    /* Code */
+    pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; margin: 16px 0; line-height: 1.5; }
+    code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.88em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+
+    /* Callouts */
+    .callout { border-left: 4px solid var(--purple); background: var(--bg-card); padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    .callout.warn { border-left-color: var(--yellow); }
+    .callout.info { border-left-color: var(--blue); }
+    .callout.tip { border-left-color: var(--green); }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    th { background: var(--bg-card); text-align: left; padding: 10px 12px; border: 1px solid var(--border); font-weight: 600; }
+    td { padding: 10px 12px; border: 1px solid var(--border); }
+    tr:nth-child(even) td { background: rgba(26,26,46,0.5); }
+
+    /* Diagram */
+    .diagram { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin: 20px 0; text-align: center; font-family: 'SF Mono', monospace; font-size: 0.9rem; line-height: 2; }
+    .diagram .arrow { color: var(--purple-light); }
+    .diagram .tier { display: inline-block; padding: 6px 16px; border-radius: 6px; margin: 4px; }
+    .tier-1 { background: var(--purple-dim); border: 1px solid var(--purple); }
+    .tier-2 { background: #1e3a5f; border: 1px solid var(--blue); }
+    .tier-3 { background: #14532d; border: 1px solid var(--green); }
+
+    /* Footer */
+    footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 48px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="brand">Agentic Skills Framework</a>
+      <div>
+        <a href="/">Home</a> &nbsp;&middot;&nbsp;
+        <a href="/concepts.html">Concepts</a> &nbsp;&middot;&nbsp;
+        <a href="https://github.com/Pratiyush/agentic-skills-framework">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section class="hero">
+      <h1>Agent Skills: Concepts</h1>
+      <p>A deep guide to understanding how Agent Skills work, how agents load them, and how to build great ones.</p>
+    </section>
+
+    <div class="toc">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#what-are-skills">What Are Agent Skills?</a></li>
+        <li><a href="#anatomy">Anatomy of a Skill</a></li>
+        <li><a href="#progressive-disclosure">Progressive Disclosure</a></li>
+        <li><a href="#lifecycle">The Skill Lifecycle</a></li>
+        <li><a href="#frontmatter">Frontmatter Specification</a></li>
+        <li><a href="#body">Writing the Body</a></li>
+        <li><a href="#scripts">Scripts &amp; Executable Code</a></li>
+        <li><a href="#descriptions">Descriptions &amp; Activation</a></li>
+        <li><a href="#cross-agent">Cross-Agent Compatibility</a></li>
+        <li><a href="#evaluation">Evaluating Skills</a></li>
+        <li><a href="#security">Security Considerations</a></li>
+        <li><a href="#ecosystem">The Ecosystem</a></li>
+      </ol>
+    </div>
+
+    <!-- 1 -->
+    <section id="what-are-skills">
+      <h2>1. What Are Agent Skills?</h2>
+      <p>An Agent Skill is a <strong>folder containing a <code>SKILL.md</code> file</strong>. That file includes metadata (name and description) and instructions that tell an AI agent how to perform a specific task. Skills can also bundle scripts, templates, and reference materials.</p>
+
+      <p>The <a href="https://agentskills.io/specification">Agent Skills specification</a> is an open format adopted by <strong>33+ agent products</strong> including Claude Code, GitHub Copilot, Cursor, OpenAI Codex, Gemini CLI, VS Code, JetBrains Junie, Roo Code, OpenHands, and more.</p>
+
+      <p>Think of skills as <strong>portable expertise packages</strong>. They give agents domain-specific knowledge they wouldn't have otherwise &mdash; your company's API patterns, your team's deployment workflow, your project's edge cases.</p>
+
+      <div class="callout info">
+        <strong>Key insight</strong>
+        Skills are not plugins, extensions, or tools. They are <em>instructions</em> &mdash; natural language guidance that an agent reads and follows. They extend what the agent <em>knows</em>, not what it <em>can do</em>.
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="anatomy">
+      <h2>2. Anatomy of a Skill</h2>
+<pre><code>my-skill/
+├── SKILL.md          # Required: metadata + instructions
+├── scripts/          # Optional: executable code
+│   └── validate.sh
+├── references/       # Optional: documentation
+│   └── REFERENCE.md
+└── assets/           # Optional: templates, resources
+    └── template.json</code></pre>
+
+      <p>Only <code>SKILL.md</code> is required. Everything else is optional and loaded on demand.</p>
+
+      <table>
+        <tr><th>Directory</th><th>Purpose</th><th>Loaded When</th></tr>
+        <tr><td><code>SKILL.md</code></td><td>Metadata + instructions</td><td>On activation</td></tr>
+        <tr><td><code>scripts/</code></td><td>Executable code the agent runs</td><td>When instructions reference them</td></tr>
+        <tr><td><code>references/</code></td><td>Additional docs the agent reads</td><td>When instructions reference them</td></tr>
+        <tr><td><code>assets/</code></td><td>Static resources (templates, images)</td><td>When instructions reference them</td></tr>
+      </table>
+
+      <div class="callout tip">
+        <strong>Rule of thumb</strong>
+        Keep <code>SKILL.md</code> under 500 lines / 5,000 tokens. Move detailed reference material to separate files in <code>references/</code> and tell the agent when to load each file.
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="progressive-disclosure">
+      <h2>3. Progressive Disclosure</h2>
+      <p>This is the <strong>core architectural principle</strong> behind Agent Skills. Every skills-compatible agent follows the same three-tier loading strategy:</p>
+
+      <div class="diagram">
+        <span class="tier tier-1">Tier 1: Catalog</span>
+        <span class="arrow">&rarr;</span>
+        <span class="tier tier-2">Tier 2: Instructions</span>
+        <span class="arrow">&rarr;</span>
+        <span class="tier tier-3">Tier 3: Resources</span>
+      </div>
+
+      <table>
+        <tr><th>Tier</th><th>What's Loaded</th><th>When</th><th>Token Cost</th></tr>
+        <tr><td><strong>1. Catalog</strong></td><td>Name + description only</td><td>Session startup</td><td>~50-100 per skill</td></tr>
+        <tr><td><strong>2. Instructions</strong></td><td>Full SKILL.md body</td><td>When skill is activated</td><td>&lt;5,000 recommended</td></tr>
+        <tr><td><strong>3. Resources</strong></td><td>Scripts, references, assets</td><td>When instructions reference them</td><td>Varies</td></tr>
+      </table>
+
+      <h3>Why This Matters</h3>
+      <p>An agent with 20 installed skills doesn't pay the token cost of 20 full instruction sets upfront &mdash; only the ones actually used. With Tier 1, the agent knows <em>what</em> skills exist. With Tier 2, it knows <em>how</em> to use the relevant one. With Tier 3, it gets the detailed references only when needed.</p>
+
+      <div class="callout warn">
+        <strong>Context budget reality</strong>
+        Claude Code caches descriptions up to a 15,000 character budget. OpenAI Codex has 132 system skills that would cost ~100,000 tokens if fully loaded &mdash; metadata-only loading costs ~10,000. This is why progressive disclosure isn't optional.
+      </div>
+
+      <h3>What This Means for Skill Authors</h3>
+      <ul>
+        <li><strong>Description is everything</strong> &mdash; it's the only thing the agent sees before activation. If the description doesn't convey when to use the skill, the agent won't activate it.</li>
+        <li><strong>Keep SKILL.md lean</strong> &mdash; under 5,000 tokens. Move reference material to separate files.</li>
+        <li><strong>Tell the agent when to load files</strong> &mdash; "Read <code>references/api.md</code> if the API returns a non-200 status" is better than "see references/ for details."</li>
+      </ul>
+    </section>
+
+    <!-- 4 -->
+    <section id="lifecycle">
+      <h2>4. The Skill Lifecycle</h2>
+      <p>Every skill goes through five phases:</p>
+
+      <h3>Phase 1: Discovery</h3>
+      <p>At session startup, the agent scans skill directories and loads metadata (name + description) for each discovered skill. Agents scan multiple locations in priority order:</p>
+      <table>
+        <tr><th>Scope</th><th>Example Paths</th><th>Priority</th></tr>
+        <tr><td>Project</td><td><code>.agents/skills/</code>, <code>.claude/skills/</code>, <code>.cursor/skills/</code></td><td>Highest</td></tr>
+        <tr><td>User</td><td><code>~/.agents/skills/</code>, <code>~/.claude/skills/</code></td><td>Medium</td></tr>
+        <tr><td>System/Plugin</td><td>Agent-bundled skills</td><td>Lowest</td></tr>
+      </table>
+      <p>Project-level skills override user-level skills with the same name.</p>
+
+      <h3>Phase 2: Catalog Injection</h3>
+      <p>The agent builds a catalog of all discovered skills and injects it into the model's context (system prompt or tool description). The model now knows what skills are available.</p>
+
+      <h3>Phase 3: Activation</h3>
+      <p>When the model decides a skill is relevant (based on description matching), or the user explicitly invokes it (e.g., <code>/skill-name</code>), the full <code>SKILL.md</code> body is loaded into context.</p>
+      <p>Two activation mechanisms:</p>
+      <ul>
+        <li><strong>Model-driven</strong>: The agent's LLM reads the catalog and decides which skill is relevant. This is the default for most agents.</li>
+        <li><strong>User-explicit</strong>: The user types <code>/skill-name</code> or <code>$skill-name</code> to force activation.</li>
+      </ul>
+
+      <h3>Phase 4: Execution</h3>
+      <p>The agent follows the skill's instructions, loading referenced files (scripts, references) on demand. Scripts are executed via the agent's shell tools; references are read into context.</p>
+
+      <h3>Phase 5: Context Management</h3>
+      <p>Skill content stays in context for the rest of the session. Good implementations protect skill content from context compaction (truncation) to prevent degraded behavior mid-conversation.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="frontmatter">
+      <h2>5. Frontmatter Specification</h2>
+      <p>Every <code>SKILL.md</code> starts with YAML frontmatter between <code>---</code> delimiters:</p>
+<pre><code>---
+name: pdf-processing
+description: Extract PDF text, fill forms, merge files. Use when handling PDFs.
+license: Apache-2.0
+compatibility: Requires Python 3.14+ and uv
+metadata:
+  author: example-org
+  version: "1.0"
+allowed-tools: Bash(git:*) Read
+---</code></pre>
+
+      <table>
+        <tr><th>Field</th><th>Required</th><th>Constraints</th></tr>
+        <tr><td><code>name</code></td><td>Yes</td><td>1-64 chars, lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. Must match parent directory name.</td></tr>
+        <tr><td><code>description</code></td><td>Yes</td><td>1-1024 chars. Should describe WHAT the skill does and WHEN to use it.</td></tr>
+        <tr><td><code>license</code></td><td>No</td><td>License name or reference to bundled file.</td></tr>
+        <tr><td><code>compatibility</code></td><td>No</td><td>Max 500 chars. Environment requirements (runtime, packages, network).</td></tr>
+        <tr><td><code>metadata</code></td><td>No</td><td>Key-value map (string &rarr; string). Custom metadata for extensions.</td></tr>
+        <tr><td><code>allowed-tools</code></td><td>No</td><td>Space-delimited tool list. Experimental &mdash; support varies by agent.</td></tr>
+      </table>
+
+      <h3>Name Rules</h3>
+      <ul>
+        <li>Only lowercase letters (<code>a-z</code>), numbers (<code>0-9</code>), and hyphens (<code>-</code>)</li>
+        <li>Cannot start or end with a hyphen</li>
+        <li>No consecutive hyphens (<code>--</code>)</li>
+        <li>Must match the parent directory name exactly</li>
+      </ul>
+
+      <h3>Agent-Specific Extensions</h3>
+      <p>Some agents add their own frontmatter fields beyond the spec:</p>
+      <table>
+        <tr><th>Field</th><th>Agent</th><th>Purpose</th></tr>
+        <tr><td><code>user-invocable</code></td><td>Copilot, VS Code</td><td>Show/hide in slash command menu</td></tr>
+        <tr><td><code>disable-model-invocation</code></td><td>Copilot, Cursor</td><td>Manual-only activation</td></tr>
+        <tr><td><code>argument-hint</code></td><td>Copilot</td><td>Hint text for <code>/command [hint]</code></td></tr>
+        <tr><td><code>agents/openai.yaml</code></td><td>Codex</td><td>UI metadata (display name, icons, color)</td></tr>
+      </table>
+      <div class="callout warn">
+        <strong>Portability warning</strong>
+        Agent-specific fields are silently ignored by other agents. Copilot ignores underscore fields (use hyphens). Codex's <code>openai.yaml</code> is Codex-only.
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="body">
+      <h2>6. Writing the Body</h2>
+      <p>The markdown body after the frontmatter contains the skill's instructions. There are no format restrictions &mdash; write whatever helps the agent perform the task. But certain patterns consistently produce better results.</p>
+
+      <h3>Effective Patterns</h3>
+      <h4>Gotchas Sections</h4>
+      <p>The highest-value content in many skills. These are concrete, environment-specific facts that defy reasonable assumptions:</p>
+<pre><code>## Gotchas
+
+- The `users` table uses soft deletes. Always include `WHERE deleted_at IS NULL`.
+- User ID is `user_id` in the DB, `uid` in auth, and `accountId` in billing.
+- `/health` returns 200 even if DB is down. Use `/ready` for full health.</code></pre>
+
+      <h4>Output Templates</h4>
+      <p>When the agent needs to produce output in a specific format, provide a template. Agents pattern-match well against concrete structures:</p>
+<pre><code>## Report structure
+
+Use this template:
+
+# [Analysis Title]
+
+## Executive summary
+[One-paragraph overview]
+
+## Key findings
+- Finding 1 with data
+- Finding 2 with data</code></pre>
+
+      <h4>Validation Loops</h4>
+      <p>Instruct the agent to validate its own work before proceeding:</p>
+<pre><code>1. Make your edits
+2. Run: python scripts/validate.py output/
+3. If validation fails, fix and re-run
+4. Only proceed when validation passes</code></pre>
+
+      <h4>Plan-Validate-Execute</h4>
+      <p>For batch or destructive operations, create an intermediate plan, validate it, then execute:</p>
+<pre><code>1. Extract form fields: python scripts/analyze.py input.pdf
+2. Create field_values.json mapping each field
+3. Validate: python scripts/validate.py form_fields.json field_values.json
+4. If validation fails, revise and re-validate
+5. Fill: python scripts/fill.py input.pdf field_values.json output.pdf</code></pre>
+
+      <h3>Anti-Patterns</h3>
+      <ul>
+        <li><strong>Generic instructions</strong>: "Handle errors appropriately" &mdash; the agent already knows this. Be specific.</li>
+        <li><strong>Option menus</strong>: "You can use A, B, or C..." &mdash; pick a default, mention alternatives briefly.</li>
+        <li><strong>Obvious knowledge</strong>: Don't explain what a PDF is or how HTTP works. Focus on what the agent <em>wouldn't know</em> without your skill.</li>
+        <li><strong>Exhaustive coverage</strong>: Concise step-by-step guidance with a working example beats comprehensive documentation.</li>
+      </ul>
+    </section>
+
+    <!-- 7 -->
+    <section id="scripts">
+      <h2>7. Scripts &amp; Executable Code</h2>
+      <p>Scripts in <code>scripts/</code> let skills perform deterministic operations. The agent executes them via shell tools &mdash; they cost <strong>zero context tokens</strong> (they run, not load).</p>
+
+      <h3>Self-Contained Scripts</h3>
+      <p>Bundle dependencies inline so scripts run with a single command:</p>
+      <table>
+        <tr><th>Language</th><th>Mechanism</th><th>Runner</th></tr>
+        <tr><td>Python</td><td>PEP 723 inline metadata</td><td><code>uv run scripts/extract.py</code></td></tr>
+        <tr><td>TypeScript</td><td>Deno <code>npm:</code> imports</td><td><code>deno run scripts/extract.ts</code></td></tr>
+        <tr><td>JavaScript</td><td>Bun auto-install</td><td><code>bun run scripts/extract.ts</code></td></tr>
+        <tr><td>Ruby</td><td><code>bundler/inline</code></td><td><code>ruby scripts/extract.rb</code></td></tr>
+        <tr><td>Go</td><td><code>go run</code> with URL</td><td><code>go run package@version</code></td></tr>
+      </table>
+
+      <h3>Design Rules for Agentic Scripts</h3>
+      <ul>
+        <li><strong>No interactive prompts</strong> &mdash; agents can't respond to TTY input. Use flags and env vars.</li>
+        <li><strong>Document with <code>--help</code></strong> &mdash; this is how the agent learns the interface.</li>
+        <li><strong>Structured output</strong> &mdash; JSON/CSV over free-form text. Data to stdout, diagnostics to stderr.</li>
+        <li><strong>Helpful errors</strong> &mdash; say what went wrong, what was expected, and what to try.</li>
+        <li><strong>Idempotent</strong> &mdash; "create if not exists" beats "create and fail on duplicate."</li>
+        <li><strong>Dry-run support</strong> &mdash; <code>--dry-run</code> for destructive operations.</li>
+        <li><strong>Meaningful exit codes</strong> &mdash; distinct codes for different failure types.</li>
+        <li><strong>Bounded output size</strong> &mdash; agent harnesses truncate at 10-30K chars. Default to summaries.</li>
+      </ul>
+    </section>
+
+    <!-- 8 -->
+    <section id="descriptions">
+      <h2>8. Descriptions &amp; Activation</h2>
+      <p>The description field carries the <strong>entire burden of triggering</strong>. If the description doesn't convey when the skill is useful, the agent won't know to reach for it.</p>
+
+      <h3>Writing Effective Descriptions</h3>
+<pre><code># Bad
+description: Helps with PDFs.
+
+# Good
+description: >
+  Extract PDF text, fill forms, and merge files.
+  Use when handling PDFs or when the user mentions
+  documents, forms, or text extraction.</code></pre>
+
+      <h4>Principles</h4>
+      <ul>
+        <li><strong>Imperative phrasing</strong>: "Use this skill when..." not "This skill does..."</li>
+        <li><strong>User intent, not implementation</strong>: Describe what the user wants, not the skill's mechanics.</li>
+        <li><strong>Be pushy</strong>: "even if they don't explicitly mention 'CSV' or 'analysis'"</li>
+        <li><strong>Concise</strong>: A few sentences. Hard limit: 1,024 characters.</li>
+      </ul>
+
+      <h3>Testing Trigger Accuracy</h3>
+      <p>Create eval queries labeled with should/shouldn't trigger:</p>
+<pre><code>[
+  {"query": "analyze my sales spreadsheet", "should_trigger": true},
+  {"query": "convert JSON to YAML", "should_trigger": false}
+]</code></pre>
+      <p>Run each query 3+ times (model behavior is non-deterministic) and compute a trigger rate. Use a 60/40 train/validation split to avoid overfitting the description to your test set.</p>
+
+      <div class="callout warn">
+        <strong>Known issue</strong>
+        Claude Code's auto-triggering becomes unreliable at 40+ loaded skills. This is a fundamental context budget problem &mdash; descriptions compete for attention. Keep descriptions focused and use explicit invocation (<code>/skill-name</code>) as a fallback.
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="cross-agent">
+      <h2>9. Cross-Agent Compatibility</h2>
+      <p>The Agent Skills format is adopted by 33+ agents, but each has quirks. Here's what you need to know.</p>
+
+      <h3>Discovery Paths</h3>
+      <table>
+        <tr><th>Agent</th><th>Primary Path</th><th>Also Scans</th></tr>
+        <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+        <tr><td>GitHub Copilot</td><td><code>.github/skills/</code></td><td><code>.agents/skills/</code>, <code>.claude/skills/</code></td></tr>
+        <tr><td>Cursor</td><td><code>.cursor/skills/</code></td><td><code>.agents/skills/</code>, <code>.claude/skills/</code>, <code>.codex/skills/</code></td></tr>
+        <tr><td>OpenAI Codex</td><td><code>.codex/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+        <tr><td>Gemini CLI</td><td><code>.gemini/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+        <tr><td>Kiro</td><td><code>.kiro/skills/</code></td><td>&mdash;</td></tr>
+        <tr><td>Roo Code</td><td><code>.roo/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+      </table>
+
+      <div class="callout tip">
+        <strong>Maximum portability</strong>
+        Place skills in <code>.agents/skills/</code> &mdash; the cross-client convention supported by the most agents.
+      </div>
+
+      <h3>Common Compatibility Issues</h3>
+      <table>
+        <tr><th>Issue</th><th>Affected Agents</th><th>Mitigation</th></tr>
+        <tr><td>Underscore fields silently ignored</td><td>Copilot, VS Code</td><td>Always use hyphens: <code>user-invocable</code> not <code>user_invocable</code></td></tr>
+        <tr><td><code>allowed-tools</code> validator bug</td><td>VS Code</td><td>Known bug (issue #14131). Ignore the warning.</td></tr>
+        <tr><td>Tool names differ</td><td>All</td><td><code>Bash</code> (Copilot) vs <code>run_shell_command</code> (Gemini) vs <code>bash_tool</code> (Anthropic)</td></tr>
+        <tr><td>Name collision with built-ins</td><td>Claude Code</td><td>Check for built-in skills before naming yours</td></tr>
+        <tr><td>No YAML comment support</td><td>Some parsers</td><td>Avoid complex YAML; test with multiple parsers</td></tr>
+      </table>
+    </section>
+
+    <!-- 10 -->
+    <section id="evaluation">
+      <h2>10. Evaluating Skills</h2>
+      <p>A skill that "seems to work" on one prompt may fail on varied inputs. Structured evaluation gives you a feedback loop.</p>
+
+      <h3>The Eval Loop</h3>
+      <ol>
+        <li><strong>Write test cases</strong>: prompt + expected output + optional input files</li>
+        <li><strong>Run with/without skill</strong>: each test case runs twice for baseline comparison</li>
+        <li><strong>Write assertions</strong>: verifiable checks after seeing first outputs</li>
+        <li><strong>Grade</strong>: PASS/FAIL with specific evidence for each assertion</li>
+        <li><strong>Aggregate</strong>: compute pass rates, token costs, time deltas</li>
+        <li><strong>Iterate</strong>: fix the skill based on failed assertions + execution transcripts</li>
+      </ol>
+
+      <h3>What Good Assertions Look Like</h3>
+      <table>
+        <tr><th>Good</th><th>Bad</th></tr>
+        <tr><td>"Output file is valid JSON"</td><td>"Output is good"</td></tr>
+        <tr><td>"Chart has labeled axes"</td><td>"Chart looks nice"</td></tr>
+        <tr><td>"Report includes at least 3 recommendations"</td><td>"Report is comprehensive"</td></tr>
+      </table>
+
+      <h3>Key Metrics</h3>
+<pre><code>{
+  "with_skill":    { "pass_rate": 0.83, "tokens": 3800 },
+  "without_skill": { "pass_rate": 0.33, "tokens": 2100 },
+  "delta":         { "pass_rate": +0.50, "tokens": +1700 }
+}</code></pre>
+      <p>The delta tells you what the skill costs (tokens) and what it buys (pass rate). A +50% pass rate for +1,700 tokens is usually worth it.</p>
+    </section>
+
+    <!-- 11 -->
+    <section id="security">
+      <h2>11. Security Considerations</h2>
+      <p>Skills are instructions injected into an agent's context. Untrusted skills pose real risks.</p>
+
+      <h3>Threat Model</h3>
+      <table>
+        <tr><th>Risk</th><th>Description</th></tr>
+        <tr><td><strong>Prompt injection</strong></td><td>Malicious instructions that hijack agent behavior or extract system prompts</td></tr>
+        <tr><td><strong>Data exfiltration</strong></td><td>Scripts that send sensitive data to external servers</td></tr>
+        <tr><td><strong>Credential theft</strong></td><td>Accessing environment variables, API keys, or tokens</td></tr>
+        <tr><td><strong>Destructive actions</strong></td><td>Scripts that delete files, drop databases, or modify production systems</td></tr>
+      </table>
+
+      <h3>Mitigations</h3>
+      <ul>
+        <li><strong>Trust gating</strong>: Only load project-level skills from trusted repositories</li>
+        <li><strong>Capability declarations</strong>: Skills should declare what they need (network, file access, shell)</li>
+        <li><strong>Script review</strong>: Audit all bundled scripts before enabling a skill</li>
+        <li><strong>No hardcoded secrets</strong>: Never put API keys or tokens in SKILL.md or scripts</li>
+        <li><strong>Network policies</strong>: Declare which external hosts scripts need to reach</li>
+      </ul>
+
+      <div class="callout warn">
+        <strong>Enterprise warning</strong>
+        The current spec has no security model. Skills cannot declare capabilities, sign their contents, or be verified. The <a href="https://github.com/Pratiyush/agentic-skills-framework">@skillscraft extended spec</a> is working to address this with capability declarations, credential requirements, and signed skills.
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="ecosystem">
+      <h2>12. The Ecosystem</h2>
+
+      <h3>Compatible Agents (33+)</h3>
+      <p>Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, Roo Code, OpenHands, Amp, Letta, Goose, Kiro, TRAE, Factory, Firebender, Spring AI, Databricks Genie Code, Snowflake Cortex Code, and more.</p>
+
+      <h3>Skill Registries</h3>
+      <table>
+        <tr><th>Registry</th><th>Skills</th><th>Features</th></tr>
+        <tr><td><a href="https://skills.sh">skills.sh</a> (Vercel)</td><td>160K+</td><td>CLI install, Snyk security scanning</td></tr>
+        <tr><td><a href="https://skillsmp.com">SkillsMP</a></td><td>350K+</td><td>Semantic search, AI-powered discovery</td></tr>
+        <tr><td><a href="https://lobehub.com/skills">LobeHub</a></td><td>20K+</td><td>Advanced filtering, categories</td></tr>
+        <tr><td>Awesome lists</td><td>1K+ curated</td><td>Hand-vetted quality, organized by creator</td></tr>
+      </table>
+
+      <h3>Tooling</h3>
+      <table>
+        <tr><th>Tool</th><th>Language</th><th>What It Does</th></tr>
+        <tr><td><a href="https://github.com/agentskills/agentskills">skills-ref</a></td><td>Python</td><td>Basic validation, metadata read, prompt XML gen (demo only)</td></tr>
+        <tr><td><a href="https://github.com/microsoft/waza">waza</a></td><td>Go</td><td>Scaffold, evaluate, token count, compliance check, CI/CD</td></tr>
+        <tr><td><strong><a href="https://github.com/Pratiyush/agentic-skills-framework">@skillscraft</a></strong></td><td>TypeScript</td><td>Parse, validate, lint, scaffold &mdash; plus extended spec for security, testing, composition</td></tr>
+      </table>
+
+      <h3>Further Reading</h3>
+      <ul>
+        <li><a href="https://agentskills.io/specification">Agent Skills Specification</a></li>
+        <li><a href="https://agentskills.io/skill-creation/best-practices">Best Practices for Skill Creators</a></li>
+        <li><a href="https://agentskills.io/skill-creation/evaluating-skills">Evaluating Skill Output Quality</a></li>
+        <li><a href="https://agentskills.io/skill-creation/optimizing-descriptions">Optimizing Skill Descriptions</a></li>
+        <li><a href="https://agentskills.io/skill-creation/using-scripts">Using Scripts in Skills</a></li>
+        <li><a href="https://agentskills.io/clients">Client Showcase (33+ Agents)</a></li>
+        <li><a href="https://agentskills.io/client-implementation/adding-skills-support">Adding Skills Support to Your Agent</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>
+        <a href="https://github.com/Pratiyush/agentic-skills-framework">Agentic Skills Framework</a> &mdash;
+        Apache-2.0 License &mdash;
+        Built with <a href="https://agentskills.io">agentskills.io</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

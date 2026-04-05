@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Skills Framework — TypeScript toolkit for Agent Skills</title>
+  <meta name="description" content="Build, validate, lint, and publish Agent Skills that work across Claude Code, GitHub Copilot, Cursor, OpenAI Codex, and 25+ more agents.">
+  <meta name="keywords" content="agent skills, agentskills, AI agents, skill framework, Claude Code, GitHub Copilot, Cursor, TypeScript, validator, linter">
+  <meta property="og:title" content="Agentic Skills Framework">
+  <meta property="og:description" content="The TypeScript toolkit for building, validating, and shipping Agent Skills.">
+  <meta property="og:url" content="https://pratiyush.github.io/agentic-skills-framework">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --purple: #7C3AED;
+      --purple-light: #A78BFA;
+      --bg: #0f0f23;
+      --bg-card: #1a1a2e;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 0 40px;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--purple-light), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero .tagline {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .badges img { height: 20px; }
+    .agents-strip {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    /* Demo */
+    .demo-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 40px 0;
+    }
+    .demo-section h2 {
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 640px) {
+      .demo-grid { grid-template-columns: 1fr; }
+    }
+    .demo-input textarea {
+      width: 100%;
+      min-height: 200px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+    }
+    .demo-output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      min-height: 200px;
+      overflow-y: auto;
+    }
+    .demo-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-validate { background: var(--purple); color: white; }
+    .btn-lint { background: var(--blue); color: white; }
+    .result-error { color: var(--red); }
+    .result-warn { color: var(--yellow); }
+    .result-info { color: var(--blue); }
+    .result-ok { color: var(--green); }
+    .privacy-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* Install */
+    .install-section { margin: 40px 0; }
+    .install-section h2 { font-size: 1.5rem; margin-bottom: 16px; }
+    pre {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      margin: 12px 0;
+    }
+    code { color: var(--purple-light); }
+
+    /* Packages */
+    .packages { margin: 40px 0; }
+    .packages h2 { font-size: 1.5rem; margin-bottom: 16px; }
+    .pkg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 640px) { .pkg-grid { grid-template-columns: 1fr; } }
+    .pkg-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .pkg-card h3 { color: var(--purple-light); margin-bottom: 8px; font-size: 1rem; }
+    .pkg-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    footer a { color: var(--purple-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Links section */
+    .links { margin: 40px 0; }
+    .links h2 { font-size: 1.5rem; margin-bottom: 16px; }
+    .links ul { list-style: none; }
+    .links li { margin-bottom: 8px; }
+    .links a { color: var(--purple-light); text-decoration: none; }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Agentic Skills Framework</h1>
+      <p class="tagline">The TypeScript toolkit for building, validating, and shipping Agent Skills.</p>
+      <div class="badges">
+        <a href="https://www.npmjs.com/package/@skillscraft/core"><img src="https://img.shields.io/npm/v/@skillscraft/core?style=flat-square" alt="npm"></a>
+        <a href="https://github.com/Pratiyush/agentic-skills-framework/actions"><img src="https://img.shields.io/github/actions/workflow/status/Pratiyush/agentic-skills-framework/ci.yml?style=flat-square" alt="CI"></a>
+        <a href="https://github.com/Pratiyush/agentic-skills-framework/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
+        <a href="https://agentskills.io/specification"><img src="https://img.shields.io/badge/spec-agentskills.io-7C3AED.svg?style=flat-square" alt="Agent Skills"></a>
+      </div>
+      <p class="agents-strip">Works with Claude Code, GitHub Copilot, Cursor, OpenAI Codex, Gemini CLI, VS Code, JetBrains Junie, and 25+ more agents</p>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section class="demo-section">
+      <h2>Try it — validate a SKILL.md</h2>
+      <div class="demo-grid">
+        <div class="demo-input">
+          <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">SKILL.md content:</label>
+          <textarea id="skill-input">---
+name: code-review
+description: Review pull requests for security, performance, and style issues. Use when the user asks for a code review or submits a PR.
+license: MIT
+metadata:
+  author: example-org
+  version: "1.0"
+---
+
+# Code Review
+
+## When to use this skill
+
+Use this when the user asks you to review code, a pull request, or a diff.
+
+## Instructions
+
+1. Check all database queries for SQL injection (use parameterized queries)
+2. Verify authentication checks on every endpoint
+3. Look for race conditions in concurrent code paths
+4. Confirm error messages don't leak internal details
+
+## Gotchas
+
+- The `users` table uses soft deletes. Queries must include `WHERE deleted_at IS NULL`.
+- The user ID is `user_id` in the database but `uid` in the auth service.</textarea>
+          <div class="demo-buttons">
+            <button class="btn btn-validate" onclick="runValidate()">Validate</button>
+            <button class="btn btn-lint" onclick="runLint()">Lint</button>
+          </div>
+          <p class="privacy-note">Runs entirely in your browser. No data sent to any server.</p>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">Results:</label>
+          <div class="demo-output" id="results">
+            <span style="color: var(--text-muted)">Click "Validate" or "Lint" to check the skill.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install -->
+    <section class="install-section">
+      <h2>Install</h2>
+      <pre><code># CLI (recommended)
+npm install -g @skillscraft/cli
+
+# SDK (programmatic use)
+npm install @skillscraft/core</code></pre>
+
+      <h3 style="margin-top: 24px;">Quick Start</h3>
+      <pre><code># Scaffold a new skill
+skill init my-skill
+
+# Validate against the spec
+skill validate my-skill
+
+# Lint for best practices
+skill lint my-skill --fix</code></pre>
+    </section>
+
+    <!-- Packages -->
+    <section class="packages">
+      <h2>Packages</h2>
+      <div class="pkg-grid">
+        <div class="pkg-card">
+          <h3>@skillscraft/spec</h3>
+          <p>TypeScript types and JSON schemas for the Agent Skills specification.</p>
+        </div>
+        <div class="pkg-card">
+          <h3>@skillscraft/core</h3>
+          <p>Parse, validate, and lint SKILL.md files programmatically.</p>
+        </div>
+        <div class="pkg-card">
+          <h3>@skillscraft/cli</h3>
+          <p>CLI tool: <code>skill init</code>, <code>skill validate</code>, <code>skill lint</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Links -->
+    <section class="links">
+      <h2>Links</h2>
+      <ul>
+        <li><a href="/concepts.html"><strong>Concepts Guide</strong> — Deep dive into Agent Skills fundamentals</a></li>
+        <li><a href="https://github.com/Pratiyush/agentic-skills-framework">GitHub Repository</a></li>
+        <li><a href="https://www.npmjs.com/package/@skillscraft/core">npm: @skillscraft/core</a></li>
+        <li><a href="https://agentskills.io/specification">Agent Skills Specification</a></li>
+        <li><a href="https://agentskills.io/skill-creation/best-practices">Skill Best Practices</a></li>
+        <li><a href="https://agentskills.io/clients">Compatible Agents (33+)</a></li>
+        <li><a href="https://github.com/Pratiyush/agentic-skills-framework/blob/master/CONTRIBUTING.md">Contributing Guide</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>
+        <a href="https://github.com/Pratiyush/agentic-skills-framework">Agentic Skills Framework</a> —
+        Apache-2.0 License —
+        Compatible with <a href="https://agentskills.io">agentskills.io</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Client-side SKILL.md validator (mirrors @skillscraft/core logic)
+    const SKILL_NAME_REGEX = /^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){0,62}[a-z0-9]?$/;
+    const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
+
+    function parseFrontmatter(content) {
+      const match = content.match(FRONTMATTER_REGEX);
+      if (!match) return null;
+      const lines = match[1].split('\n');
+      const fm = {};
+      let currentKey = null;
+      let indent = 0;
+      for (const line of lines) {
+        const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)$/);
+        if (kvMatch) {
+          const [, key, val] = kvMatch;
+          fm[key] = val.replace(/^["']|["']$/g, '');
+          currentKey = key;
+        }
+      }
+      return { frontmatter: fm, body: match[2].trim() };
+    }
+
+    function runValidate() {
+      const content = document.getElementById('skill-input').value;
+      const results = document.getElementById('results');
+      const errors = [];
+
+      const parsed = parseFrontmatter(content);
+      if (!parsed) {
+        results.innerHTML = '<div class="result-error">✗ No valid YAML frontmatter found. SKILL.md must start with --- followed by YAML and ---.</div>';
+        return;
+      }
+
+      const { frontmatter: fm } = parsed;
+
+      if (!fm.name) errors.push({ sev: 'error', msg: '[name.required] The `name` field is required.' });
+      else {
+        if (fm.name.length > 64) errors.push({ sev: 'error', msg: `[name.maxLength] Name exceeds 64 characters (got ${fm.name.length}).` });
+        if (!SKILL_NAME_REGEX.test(fm.name)) errors.push({ sev: 'error', msg: '[name.format] Name must be lowercase alphanumeric + hyphens, no leading/trailing/consecutive hyphens.' });
+      }
+
+      if (!fm.description) errors.push({ sev: 'error', msg: '[description.required] The `description` field is required.' });
+      else if (fm.description.length > 1024) errors.push({ sev: 'error', msg: `[description.maxLength] Description exceeds 1024 characters.` });
+
+      if (fm.compatibility && fm.compatibility.length > 500) errors.push({ sev: 'error', msg: '[compatibility.maxLength] Compatibility exceeds 500 characters.' });
+
+      const known = new Set(['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools']);
+      for (const key of Object.keys(fm)) {
+        if (!known.has(key)) errors.push({ sev: 'warn', msg: `[frontmatter.unknownField] Unknown field "${key}".` });
+      }
+
+      if (errors.length === 0) {
+        results.innerHTML = '<div class="result-ok">✓ Valid — all spec checks pass!</div>';
+      } else {
+        results.innerHTML = errors.map(e =>
+          `<div class="result-${e.sev === 'error' ? 'error' : 'warn'}">${e.sev === 'error' ? '✗' : '⚠'} ${e.msg}</div>`
+        ).join('');
+      }
+    }
+
+    function runLint() {
+      const content = document.getElementById('skill-input').value;
+      const results = document.getElementById('results');
+      const diags = [];
+
+      const parsed = parseFrontmatter(content);
+      if (!parsed) {
+        results.innerHTML = '<div class="result-error">✗ Cannot lint — no valid frontmatter found.</div>';
+        return;
+      }
+
+      const { frontmatter: fm, body } = parsed;
+      const tokens = Math.ceil(body.length / 4);
+      const lines = body.split('\n');
+
+      if (tokens > 5000) diags.push({ sev: 'warn', msg: `[context-budget] ~${tokens} tokens (recommended max: 5000). Move content to references/.` });
+      if (lines.length > 500) diags.push({ sev: 'warn', msg: `[context-budget] ${lines.length} lines (recommended max: 500).` });
+
+      if (fm.description && !/\bwhen\b/i.test(fm.description) && !/\buse .*(for|if|when)\b/i.test(fm.description) && !/\btrigger/i.test(fm.description)) {
+        diags.push({ sev: 'warn', msg: '[description-quality] Description should include "when" to use the skill.' });
+      }
+
+      const generic = ['handle errors appropriately', 'follow best practices', 'use proper error handling', 'ensure security'];
+      const bodyLower = body.toLowerCase();
+      for (const phrase of generic) {
+        if (bodyLower.includes(phrase)) diags.push({ sev: 'warn', msg: `[no-generic-instructions] Found "${phrase}". Be more specific.` });
+      }
+
+      if (lines.length > 50 && !/## gotchas/i.test(body) && !/## caveats/i.test(body)) {
+        diags.push({ sev: 'info', msg: '[gotchas-present] Consider adding a "## Gotchas" section.' });
+      }
+
+      if (diags.length === 0) {
+        results.innerHTML = '<div class="result-ok">✓ All lint rules pass!</div>';
+      } else {
+        results.innerHTML = diags.map(d => {
+          const cls = d.sev === 'error' ? 'error' : d.sev === 'warn' ? 'warn' : 'info';
+          const icon = d.sev === 'error' ? '✗' : d.sev === 'warn' ? '⚠' : 'ℹ';
+          return `<div class="result-${cls}">${icon} ${d.msg}</div>`;
+        }).join('');
+      }
+    }
+  </script>
+</body>
+</html>
