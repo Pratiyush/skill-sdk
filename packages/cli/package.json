@@ -27,7 +27,7 @@
   "dependencies": {
     "@skillscraft/core": "workspace:*",
     "@skillscraft/spec": "workspace:*",
-    "commander": "^13.1.0"
+    "commander": "^14.0.3"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
