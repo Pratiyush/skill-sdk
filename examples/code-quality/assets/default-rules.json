@@ -1,0 +1,18 @@
+{
+  "maxLineLength": 120,
+  "maxMethodLength": 50,
+  "maxFileLength": 500,
+  "complexityThreshold": 10,
+  "rules": {
+    "line-too-long": { "enabled": true, "severity": "warning" },
+    "method-too-long": { "enabled": true, "severity": "warning" },
+    "file-too-long": { "enabled": true, "severity": "warning" },
+    "no-tabs": { "enabled": true, "severity": "info" },
+    "trailing-whitespace": { "enabled": true, "severity": "info" },
+    "empty-catch": { "enabled": true, "severity": "error" },
+    "no-sysout": { "enabled": true, "severity": "warning" },
+    "no-wildcard-import": { "enabled": true, "severity": "warning" },
+    "magic-number": { "enabled": true, "severity": "info" },
+    "todo-comment": { "enabled": true, "severity": "info" }
+  }
+}

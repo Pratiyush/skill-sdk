@@ -1,0 +1,26 @@
+[
+  {
+    "name": "english-greeting",
+    "input": "Say hello in English",
+    "expectedOutput": "Hello, world!",
+    "tags": ["smoke", "en"]
+  },
+  {
+    "name": "spanish-greeting",
+    "input": "Greet me in Spanish",
+    "expectedOutput": "Hola, mundo!",
+    "tags": ["smoke", "es"]
+  },
+  {
+    "name": "unknown-language-fallback",
+    "input": "Say hello in Klingon",
+    "expectedOutput": "Hello, world!",
+    "tags": ["edge-case"]
+  },
+  {
+    "name": "formal-greeting",
+    "input": "Give me a formal German greeting",
+    "expectedOutput": "Guten Tag, sehr geehrter Benutzer.",
+    "tags": ["formal", "de"]
+  }
+]

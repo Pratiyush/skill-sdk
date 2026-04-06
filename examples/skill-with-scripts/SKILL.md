@@ -1,6 +1,8 @@
 ---
 name: skill-with-scripts
-description: Example skill that bundles executable scripts. Use when demonstrating script-based skills.
+description: >
+  Example skill that bundles executable scripts for automated tasks.
+  Use when you need to run shell-based automation via bundled scripts.
 compatibility: Requires bash
 ---
 

@@ -1,0 +1,7 @@
+Welcome to {{APP_NAME}}!
+
+We are glad to have you here. If you need help,
+just ask and our assistant will guide you through.
+
+Best regards,
+The {{APP_NAME}} Team

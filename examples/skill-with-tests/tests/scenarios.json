@@ -1,0 +1,43 @@
+[
+  {
+    "name": "basic-greeting",
+    "description": "Verify the skill responds to a simple greeting prompt",
+    "cases": [
+      {
+        "name": "hello-response",
+        "input": "Hello, can you help me understand this skill?",
+        "assertions": [
+          { "type": "contains", "value": "test", "description": "Response mentions testing" },
+          { "type": "not-contains", "value": "error", "description": "No error in response" }
+        ],
+        "expectedBehavior": "The agent should explain the test scenario format and point to tests/scenarios.json"
+      }
+    ]
+  },
+  {
+    "name": "test-format-explanation",
+    "description": "Verify the skill explains test case structure when asked",
+    "cases": [
+      {
+        "name": "explain-assertions",
+        "input": "What assertion types are available for skill tests?",
+        "assertions": [
+          { "type": "contains", "value": "contains", "description": "Mentions contains assertion" },
+          { "type": "contains", "value": "matches-regex", "description": "Mentions regex assertion" },
+          { "type": "matches-regex", "value": "file-(created|modified)", "description": "Mentions file assertions" }
+        ],
+        "expectedBehavior": "The agent should list all six assertion types with brief explanations"
+      },
+      {
+        "name": "create-test-file",
+        "input": "Create a sample test scenario for a code-review skill",
+        "assertions": [
+          { "type": "contains", "value": "name", "description": "Output includes scenario name" },
+          { "type": "contains", "value": "assertions", "description": "Output includes assertions" },
+          { "type": "matches-regex", "value": "\"type\"\\s*:\\s*\"(contains|not-contains|matches-regex)\"", "description": "Valid assertion type used" }
+        ],
+        "expectedBehavior": "The agent should produce a valid JSON test scenario for a code-review skill"
+      }
+    ]
+  }
+]
