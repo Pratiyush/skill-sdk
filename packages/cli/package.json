@@ -19,7 +19,7 @@
   "files": ["dist", "templates"],
   "scripts": {
     "build": "tsup",
-    "test": "echo 'no tests yet'",
+    "test": "vitest run",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"

@@ -11,12 +11,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./schemas/skill.schema.json": "./schemas/skill.schema.json"
   },
   "files": ["dist", "schemas"],
   "scripts": {
     "build": "tsup",
-    "test": "echo 'no tests yet'",
+    "test": "vitest run",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"

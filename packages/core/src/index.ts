@@ -2,6 +2,12 @@ export { parseSkill } from "./parser.js";
 export { validateSkill } from "./validator.js";
 export { lintSkill, LINT_RULES } from "./linter.js";
 export { loadSkillManifest } from "./loader.js";
+export {
+  parseSkillIgnore,
+  loadSkillIgnore,
+  filterFiles,
+  isIgnored,
+} from "./skillignore.js";
 
 // Re-export types for convenience
 export type {
