@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDK Tutorial — Agentic Skills Framework</title>
+  <meta name="description" content="Step-by-step tutorial for using @skillscraft/core and @skillscraft/spec programmatically: parse, validate, lint, and build custom pipelines for Agent Skills.">
+  <meta name="keywords" content="skillscraft SDK, agent skills tutorial, TypeScript, parseSkill, validateSkill, lintSkill, JSON Schema, SKILL.md">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="./" class="nav-brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Agentic Skills Framework
+      </a>
+      <nav class="nav-links">
+        <a href="./">Home</a>
+        <a href="concepts.html">Concepts</a>
+        <a href="specification.html">Specification</a>
+        <a href="tutorial.html" class="active">Tutorial</a>
+        <a href="https://github.com/Pratiyush/skillscraft-hub" target="_blank" rel="noopener noreferrer">Marketplace</a>
+        <a href="https://github.com/Pratiyush/agentic-skills-framework" target="_blank" rel="noopener noreferrer" class="nav-github" aria-label="GitHub repository">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero hero-sm">
+      <div class="container">
+        <h1>SDK Tutorial</h1>
+        <p class="hero-sub">Use <code>@skillscraft/core</code> and <code>@skillscraft/spec</code> programmatically in your own tools, CI pipelines, and editors.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container doc-layout">
+        <aside class="toc">
+          <h4>Contents</h4>
+          <ul>
+            <li><a href="#install">1. Install the SDK</a></li>
+            <li><a href="#parse">2. Parse a SKILL.md</a></li>
+            <li><a href="#validate">3. Validate</a></li>
+            <li><a href="#lint">4. Lint</a></li>
+            <li><a href="#manifest">5. Load a Manifest</a></li>
+            <li><a href="#skillignore">6. Use .skillignore</a></li>
+            <li><a href="#types">7. Use Types</a></li>
+            <li><a href="#constants">8. Use Constants</a></li>
+            <li><a href="#json-schema">9. Use JSON Schema</a></li>
+            <li><a href="#custom-validator">10. Build a Custom Validator</a></li>
+            <li><a href="#cli-recap">11. CLI Usage Recap</a></li>
+          </ul>
+        </aside>
+
+        <div class="doc-content">
+
+          <!-- 1. Install -->
+          <section id="install">
+            <h2>1. Install the SDK</h2>
+            <p>The framework ships as two npm packages. Install both for full type safety and runtime functionality.</p>
+            <pre class="code-block"><code><span class="c-comment"># Runtime: parser, validator, linter, manifest loader</span>
+npm install @skillscraft/core
+
+<span class="c-comment"># Types, JSON schemas, and spec constants</span>
+npm install @skillscraft/spec</code></pre>
+            <p>Both packages are pure ESM and support Node 18+. They have zero runtime dependencies.</p>
+            <div class="callout info">
+              <strong>TypeScript users</strong> &mdash; <code>@skillscraft/spec</code> ships its own <code>.d.ts</code> files. No separate <code>@types/</code> package is needed.
+            </div>
+          </section>
+
+          <!-- 2. Parse -->
+          <section id="parse">
+            <h2>2. Parse a SKILL.md</h2>
+            <p><code>parseSkill()</code> reads a SKILL.md file and returns its YAML frontmatter as a typed object alongside the Markdown body.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { parseSkill } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+
+<span class="c-comment">// Parse from a file path</span>
+<span class="c-kw">const</span> parsed = <span class="c-kw">await</span> parseSkill(<span class="c-str">"./my-skill/SKILL.md"</span>);
+
+console.log(parsed.frontmatter.name);        <span class="c-comment">// "my-skill"</span>
+console.log(parsed.frontmatter.description);  <span class="c-comment">// "Review PRs for..."</span>
+console.log(parsed.body);                     <span class="c-comment">// Markdown body string</span></code></pre>
+            <p>The returned <code>ParsedSkill</code> object contains:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td><code>frontmatter</code></td><td><code>SkillFrontmatter</code></td><td>Parsed YAML fields: name, description, license, metadata, etc.</td></tr>
+                  <tr><td><code>body</code></td><td><code>string</code></td><td>Everything after the closing <code>---</code> delimiter.</td></tr>
+                  <tr><td><code>raw</code></td><td><code>string</code></td><td>The original file content, unchanged.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- 3. Validate -->
+          <section id="validate">
+            <h2>3. Validate</h2>
+            <p><code>validateSkill()</code> checks a parsed skill against the Agent Skills specification. It returns a structured result with pass/fail status and any errors.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { parseSkill, validateSkill } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+
+<span class="c-kw">const</span> parsed = <span class="c-kw">await</span> parseSkill(<span class="c-str">"./my-skill/SKILL.md"</span>);
+<span class="c-kw">const</span> result = validateSkill(parsed);
+
+<span class="c-kw">if</span> (result.valid) {
+  console.log(<span class="c-str">"Skill passes all spec checks"</span>);
+} <span class="c-kw">else</span> {
+  result.errors.forEach(err =&gt; {
+    console.error(<span class="c-str">`[${err.field}] ${err.message}`</span>);
+  });
+}</code></pre>
+            <p>Each error in the <code>errors</code> array has:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Property</th><th>Type</th><th>Example</th></tr></thead>
+                <tbody>
+                  <tr><td><code>field</code></td><td><code>string</code></td><td><code>"name"</code>, <code>"description"</code></td></tr>
+                  <tr><td><code>message</code></td><td><code>string</code></td><td><code>"name exceeds 64 characters"</code></td></tr>
+                  <tr><td><code>severity</code></td><td><code>"error"</code></td><td>Always <code>"error"</code> for validation.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- 4. Lint -->
+          <section id="lint">
+            <h2>4. Lint</h2>
+            <p><code>lintSkill()</code> goes beyond spec compliance. It checks context budgets, description quality, generic instructions, progressive disclosure, and more.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { parseSkill, lintSkill } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+
+<span class="c-kw">const</span> parsed = <span class="c-kw">await</span> parseSkill(<span class="c-str">"./my-skill/SKILL.md"</span>);
+<span class="c-kw">const</span> lint = lintSkill(parsed);
+
+lint.diagnostics.forEach(d =&gt; {
+  console.log(<span class="c-str">`[${d.severity}] ${d.rule}: ${d.message}`</span>);
+});
+
+<span class="c-comment">// Example output:</span>
+<span class="c-comment">// [warn] context-budget: ~6200 tokens (max 5000). Move content to references/.</span>
+<span class="c-comment">// [warn] description-quality: add "Use when..." trigger clause</span>
+<span class="c-comment">// [info] gotchas-present: consider adding a "## Gotchas" section</span></code></pre>
+            <p>Each diagnostic in the <code>diagnostics</code> array has:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td><code>rule</code></td><td><code>string</code></td><td>Rule identifier, e.g. <code>"context-budget"</code></td></tr>
+                  <tr><td><code>severity</code></td><td><code>"error" | "warn" | "info"</code></td><td>Severity level</td></tr>
+                  <tr><td><code>message</code></td><td><code>string</code></td><td>Human-readable explanation</td></tr>
+                  <tr><td><code>line</code></td><td><code>number | undefined</code></td><td>Line number, when applicable</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- 5. Manifest -->
+          <section id="manifest">
+            <h2>5. Load a Manifest</h2>
+            <p><code>loadSkillManifest()</code> reads an entire skill directory and returns the parsed skill plus a list of all bundled files (scripts, references, templates).</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { loadSkillManifest } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+
+<span class="c-kw">const</span> manifest = <span class="c-kw">await</span> loadSkillManifest(<span class="c-str">"./my-skill"</span>);
+
+console.log(manifest.skill.frontmatter.name);  <span class="c-comment">// "my-skill"</span>
+console.log(manifest.files);
+<span class="c-comment">// [</span>
+<span class="c-comment">//   "SKILL.md",</span>
+<span class="c-comment">//   "scripts/setup.sh",</span>
+<span class="c-comment">//   "references/api-patterns.md",</span>
+<span class="c-comment">//   "templates/component.tsx"</span>
+<span class="c-comment">// ]</span></code></pre>
+            <p>The manifest respects <code>.skillignore</code> patterns automatically, excluding files like <code>node_modules/</code> or <code>.git/</code> from the file list.</p>
+          </section>
+
+          <!-- 6. .skillignore -->
+          <section id="skillignore">
+            <h2>6. Use .skillignore</h2>
+            <p>The <code>.skillignore</code> file uses gitignore syntax to exclude files from the skill manifest. Two functions help you work with it programmatically.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { loadSkillIgnore, filterFiles } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+
+<span class="c-comment">// Load ignore patterns from a skill directory</span>
+<span class="c-kw">const</span> patterns = <span class="c-kw">await</span> loadSkillIgnore(<span class="c-str">"./my-skill"</span>);
+<span class="c-comment">// ["node_modules/", ".git/", "*.log", "dist/"]</span>
+
+<span class="c-comment">// Filter a file list against the patterns</span>
+<span class="c-kw">const</span> allFiles = [
+  <span class="c-str">"SKILL.md"</span>,
+  <span class="c-str">"scripts/setup.sh"</span>,
+  <span class="c-str">"node_modules/foo/index.js"</span>,
+  <span class="c-str">"debug.log"</span>
+];
+<span class="c-kw">const</span> included = filterFiles(allFiles, patterns);
+<span class="c-comment">// ["SKILL.md", "scripts/setup.sh"]</span></code></pre>
+            <p>If no <code>.skillignore</code> file exists, <code>loadSkillIgnore()</code> returns sensible defaults (<code>node_modules/</code>, <code>.git/</code>, <code>.DS_Store</code>).</p>
+          </section>
+
+          <!-- 7. Types -->
+          <section id="types">
+            <h2>7. Use Types</h2>
+            <p>Import TypeScript interfaces from <code>@skillscraft/spec</code> for full type safety in your tooling.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> <span class="c-kw">type</span> {
+  SkillFrontmatter,
+  ParsedSkill,
+  ValidationResult,
+  LintResult,
+  LintDiagnostic,
+  SkillManifest
+} <span class="c-kw">from</span> <span class="c-str">"@skillscraft/spec"</span>;
+
+<span class="c-comment">// SkillFrontmatter — the YAML header fields</span>
+<span class="c-kw">const</span> fm: SkillFrontmatter = {
+  name: <span class="c-str">"code-review"</span>,
+  description: <span class="c-str">"Review PRs. Use when the user submits a pull request."</span>,
+  license: <span class="c-str">"MIT"</span>,
+  metadata: { author: <span class="c-str">"acme-corp"</span>, version: <span class="c-str">"1.0"</span> }
+};
+
+<span class="c-comment">// ParsedSkill — output of parseSkill()</span>
+<span class="c-kw">const</span> skill: ParsedSkill = {
+  frontmatter: fm,
+  body: <span class="c-str">"# Code Review\n\n## Instructions\n..."</span>,
+  raw: <span class="c-str">"---\nname: code-review\n---\n# Code Review..."</span>
+};
+
+<span class="c-comment">// ValidationResult — output of validateSkill()</span>
+<span class="c-kw">const</span> vr: ValidationResult = {
+  valid: <span class="c-kw">true</span>,
+  errors: []
+};
+
+<span class="c-comment">// LintResult — output of lintSkill()</span>
+<span class="c-kw">const</span> lr: LintResult = {
+  diagnostics: []
+};</code></pre>
+          </section>
+
+          <!-- 8. Constants -->
+          <section id="constants">
+            <h2>8. Use Constants</h2>
+            <p>Spec constants are exported so you can reuse them in your own validation logic without hardcoding values.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { SKILL_NAME_REGEX, SPEC_LIMITS } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/spec"</span>;
+
+<span class="c-comment">// SKILL_NAME_REGEX — validates the `name` field</span>
+<span class="c-comment">// Lowercase alphanumeric + hyphens, 2-64 chars, no leading/trailing hyphens</span>
+console.log(SKILL_NAME_REGEX.test(<span class="c-str">"code-review"</span>));   <span class="c-comment">// true</span>
+console.log(SKILL_NAME_REGEX.test(<span class="c-str">"Code Review"</span>));   <span class="c-comment">// false</span>
+console.log(SKILL_NAME_REGEX.test(<span class="c-str">"-bad-name-"</span>));    <span class="c-comment">// false</span>
+
+<span class="c-comment">// SPEC_LIMITS — numeric limits from the spec</span>
+console.log(SPEC_LIMITS.nameMaxLength);          <span class="c-comment">// 64</span>
+console.log(SPEC_LIMITS.descriptionMaxLength);   <span class="c-comment">// 1024</span>
+console.log(SPEC_LIMITS.bodyMaxTokens);          <span class="c-comment">// 5000</span>
+console.log(SPEC_LIMITS.bodyMaxLines);           <span class="c-comment">// 500</span></code></pre>
+          </section>
+
+          <!-- 9. JSON Schema -->
+          <section id="json-schema">
+            <h2>9. Use JSON Schema</h2>
+            <p>A JSON Schema for skill frontmatter is bundled in <code>@skillscraft/spec</code>. Use it with any JSON Schema validator (Ajv, Zod, etc.) for your own tooling.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> Ajv <span class="c-kw">from</span> <span class="c-str">"ajv"</span>;
+<span class="c-kw">import</span> skillSchema <span class="c-kw">from</span> <span class="c-str">"@skillscraft/spec/schemas/skill.schema.json"</span> <span class="c-kw">with</span> { type: <span class="c-str">"json"</span> };
+
+<span class="c-kw">const</span> ajv = <span class="c-kw">new</span> Ajv();
+<span class="c-kw">const</span> validate = ajv.compile(skillSchema);
+
+<span class="c-kw">const</span> frontmatter = {
+  name: <span class="c-str">"code-review"</span>,
+  description: <span class="c-str">"Review PRs. Use when the user submits a PR."</span>
+};
+
+<span class="c-kw">if</span> (validate(frontmatter)) {
+  console.log(<span class="c-str">"Valid frontmatter"</span>);
+} <span class="c-kw">else</span> {
+  console.log(validate.errors);
+}</code></pre>
+            <p>The schema file lives at <code>node_modules/@skillscraft/spec/schemas/skill.schema.json</code> and can also be referenced by URL in editor configurations for YAML autocompletion.</p>
+          </section>
+
+          <!-- 10. Custom Validator -->
+          <section id="custom-validator">
+            <h2>10. Build a Custom Validator</h2>
+            <p>Combine parse, validate, and lint into a single pipeline for CI or editor integrations.</p>
+            <pre class="code-block"><code><span class="c-kw">import</span> { parseSkill, validateSkill, lintSkill } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/core"</span>;
+<span class="c-kw">import</span> <span class="c-kw">type</span> { ValidationResult, LintResult } <span class="c-kw">from</span> <span class="c-str">"@skillscraft/spec"</span>;
+
+<span class="c-kw">interface</span> PipelineResult {
+  valid: <span class="c-kw">boolean</span>;
+  validation: ValidationResult;
+  lint: LintResult;
+}
+
+<span class="c-kw">async function</span> checkSkill(path: <span class="c-kw">string</span>): Promise&lt;PipelineResult&gt; {
+  <span class="c-comment">// 1. Parse</span>
+  <span class="c-kw">const</span> parsed = <span class="c-kw">await</span> parseSkill(path);
+
+  <span class="c-comment">// 2. Validate against spec</span>
+  <span class="c-kw">const</span> validation = validateSkill(parsed);
+
+  <span class="c-comment">// 3. Lint for best practices</span>
+  <span class="c-kw">const</span> lint = lintSkill(parsed);
+
+  <span class="c-comment">// Fail if any validation errors or lint errors (not warnings)</span>
+  <span class="c-kw">const</span> hasLintErrors = lint.diagnostics.some(d =&gt; d.severity === <span class="c-str">"error"</span>);
+
+  <span class="c-kw">return</span> {
+    valid: validation.valid &amp;&amp; !hasLintErrors,
+    validation,
+    lint
+  };
+}
+
+<span class="c-comment">// Usage in CI</span>
+<span class="c-kw">const</span> result = <span class="c-kw">await</span> checkSkill(<span class="c-str">"./my-skill/SKILL.md"</span>);
+
+<span class="c-kw">if</span> (!result.valid) {
+  console.error(<span class="c-str">"Skill check failed:"</span>);
+  result.validation.errors.forEach(e =&gt;
+    console.error(<span class="c-str">`  [spec] ${e.field}: ${e.message}`</span>)
+  );
+  result.lint.diagnostics
+    .filter(d =&gt; d.severity === <span class="c-str">"error"</span>)
+    .forEach(d =&gt;
+      console.error(<span class="c-str">`  [lint] ${d.rule}: ${d.message}`</span>)
+    );
+  process.exit(1);
+}
+
+console.log(<span class="c-str">"All checks passed"</span>);</code></pre>
+            <div class="callout info">
+              <strong>CI tip</strong> &mdash; run this in a GitHub Action on every PR that modifies a skill directory. The CLI also supports this via <code>skill validate &amp;&amp; skill lint --error-on warn</code>.
+            </div>
+          </section>
+
+          <!-- 11. CLI Recap -->
+          <section id="cli-recap">
+            <h2>11. CLI Usage Recap</h2>
+            <p>The <code>@skillscraft/cli</code> package wraps the SDK into convenient terminal commands. Here are all seven commands.</p>
+
+            <h3><code>skill init</code></h3>
+            <p>Scaffold a new skill from a template.</p>
+            <pre class="code-block"><code><span class="c-comment"># Basic skill</span>
+skill init my-skill
+
+<span class="c-comment"># With scripts directory</span>
+skill init my-skill --template with-scripts
+
+<span class="c-comment"># With references directory</span>
+skill init my-skill --template with-references</code></pre>
+
+            <h3><code>skill validate</code></h3>
+            <p>Validate a skill against the Agent Skills specification.</p>
+            <pre class="code-block"><code><span class="c-comment"># Validate a specific skill directory</span>
+skill validate ./my-skill
+
+<span class="c-comment"># Validate from within the skill directory</span>
+cd my-skill &amp;&amp; skill validate</code></pre>
+
+            <h3><code>skill lint</code></h3>
+            <p>Lint a skill for best practices.</p>
+            <pre class="code-block"><code><span class="c-comment"># Lint with default rules</span>
+skill lint ./my-skill
+
+<span class="c-comment"># Auto-fix what can be fixed</span>
+skill lint ./my-skill --fix
+
+<span class="c-comment"># Fail on warnings (useful in CI)</span>
+skill lint ./my-skill --error-on warn</code></pre>
+
+            <h3><code>skill check</code></h3>
+            <p>Run both validate and lint in one command.</p>
+            <pre class="code-block"><code><span class="c-comment"># Full check: validate + lint</span>
+skill check ./my-skill</code></pre>
+
+            <h3><code>skill manifest</code></h3>
+            <p>Print the skill manifest (parsed frontmatter + file list).</p>
+            <pre class="code-block"><code><span class="c-comment"># JSON output</span>
+skill manifest ./my-skill
+
+<span class="c-comment"># Pretty-printed</span>
+skill manifest ./my-skill --pretty</code></pre>
+
+            <h3><code>skill pack</code></h3>
+            <p>Bundle a skill directory into a distributable archive.</p>
+            <pre class="code-block"><code><span class="c-comment"># Create a .tar.gz archive</span>
+skill pack ./my-skill
+
+<span class="c-comment"># Output to a specific path</span>
+skill pack ./my-skill -o ./dist/my-skill.tar.gz</code></pre>
+
+            <h3><code>skill info</code></h3>
+            <p>Display summary information about a skill.</p>
+            <pre class="code-block"><code><span class="c-comment"># Show skill info</span>
+skill info ./my-skill
+
+<span class="c-comment"># Example output:</span>
+<span class="c-comment">#   name:        code-review</span>
+<span class="c-comment">#   description: Review PRs for security and style issues.</span>
+<span class="c-comment">#   license:     MIT</span>
+<span class="c-comment">#   files:       4</span>
+<span class="c-comment">#   body tokens: ~1,200</span></code></pre>
+          </section>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><a href="https://github.com/Pratiyush/agentic-skills-framework">Agentic Skills Framework</a> &middot; Apache-2.0</p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+      var btn = document.getElementById('theme-toggle');
+      if (btn) btn.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme');
+        var isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var next = isDark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    })();
+  </script>
+</body>
+</html>
