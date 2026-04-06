@@ -1,1 +1,13 @@
+# Default owner for everything
 * @Pratiyush
+
+# Package-specific
+/packages/spec/ @Pratiyush
+/packages/core/ @Pratiyush
+/packages/cli/ @Pratiyush
+
+# Skills registry
+/skills/ @Pratiyush
+
+# Docs
+/docs/ @Pratiyush
