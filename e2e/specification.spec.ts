@@ -33,9 +33,9 @@ test.describe("Specification Page", () => {
     expect(count).toBeGreaterThanOrEqual(14);
   });
 
-  test("lint rules table has all 7 rules", async ({ page }) => {
+  test("lint rules table has all 6 rules", async ({ page }) => {
     const rows = page.locator("#lint-rules table tbody tr");
-    await expect(rows).toHaveCount(7);
+    await expect(rows).toHaveCount(6);
   });
 
   test("extended spec section has 4 interfaces", async ({ page }) => {

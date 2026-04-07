@@ -63,7 +63,7 @@ Add templates in `packages/cli/src/commands/init.ts` under the `TEMPLATES` objec
 
 ## Skill Creation Guidelines
 
-Based on the [Agent Skills specification](https://agentskills.io/specification) and [best practices](https://agentskills.io/skill-creation/best-practices).
+Based on the Agent Skills specification and best practices.
 
 ### SKILL.md Format
 

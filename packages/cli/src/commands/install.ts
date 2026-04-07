@@ -7,7 +7,7 @@ import { parseSkill, validateSkill, loadSkillIgnore, isIgnored } from "@skillscr
 
 /**
  * Target agent install paths.
- * Expanded coverage to match skills.sh/LobeHub (15+ agents).
+ * Expanded coverage for 15+ agents.
  */
 const TARGET_PATHS: Record<string, Record<string, string>> = {
   claude: {

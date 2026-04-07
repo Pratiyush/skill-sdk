@@ -1,5 +1,5 @@
 /**
- * Spec constants — limits and patterns from agentskills.io/specification.
+ * Spec constants — limits and patterns from the Agent Skills specification.
  */
 
 /** Regex for valid skill names: 1-64 chars, lowercase alphanumeric + hyphens, no leading/trailing/consecutive hyphens. */

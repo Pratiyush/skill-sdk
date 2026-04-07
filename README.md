@@ -8,7 +8,6 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/Pratiyush/agentic-skills-framework/ci.yml?style=flat-square)](https://github.com/Pratiyush/agentic-skills-framework/actions)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![Agent Skills](https://img.shields.io/badge/spec-agentskills.io-7C3AED.svg?style=flat-square)](https://agentskills.io/specification)
 
 Build, validate, lint, and publish Agent Skills that work across
 **Claude Code, GitHub Copilot, Cursor, OpenAI Codex, Gemini CLI, VS Code**, and 25+ more agents.
@@ -17,7 +16,7 @@ Build, validate, lint, and publish Agent Skills that work across
 
 ## Why?
 
-The [Agent Skills specification](https://agentskills.io) defines a simple, open format for giving AI agents new capabilities. It's adopted by **33+ agent products** — but the ecosystem lacks TypeScript tooling.
+The Agent Skills specification defines a simple, open format for giving AI agents new capabilities. It's adopted by **33+ agent products** — but the ecosystem lacks TypeScript tooling.
 
 **Agentic Skills Framework** fills that gap with three layers:
 
@@ -43,7 +42,7 @@ npm install @skillscraft/core
 # Scaffold a new skill
 skill init my-skill
 
-# Validate against the agentskills.io spec
+# Validate against the spec
 skill validate my-skill
 
 # Lint for best practices
@@ -64,7 +63,7 @@ skill init my-skill -t with-references # With references/ directory
 
 ### `skill validate <path>`
 
-Validate a skill against the [agentskills.io specification](https://agentskills.io/specification).
+Validate a skill against the Agent Skills specification.
 
 ```bash
 skill validate ./my-skill              # Validate a skill directory
@@ -122,7 +121,7 @@ for (const d of lint.diagnostics) {
 
 ## Compatible Agents
 
-Skills built with this framework work with any agent that supports the [Agent Skills format](https://agentskills.io/clients):
+Skills built with this framework work with any agent that supports the Agent Skills format:
 
 Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, OpenHands, Goose, Roo Code, Amp, Letta, TRAE, Kiro, and more.
 
@@ -132,10 +131,10 @@ Browse and install production skills from [SkillsCraft Hub](https://github.com/P
 
 ## Links
 
-- [Agent Skills Specification](https://agentskills.io/specification)
-- [Best Practices for Skill Creators](https://agentskills.io/skill-creation/best-practices)
-- [Client Showcase](https://agentskills.io/clients)
-- [Documentation](https://pratiyush.github.io/agentic-skills-framework)
+- [Specification Reference](https://pratiyush.github.io/agentic-skills-framework/specification.html)
+- [Concepts Guide](https://pratiyush.github.io/agentic-skills-framework/concepts.html)
+- [SDK Tutorial](https://pratiyush.github.io/agentic-skills-framework/tutorial.html)
+- [Documentation Site](https://pratiyush.github.io/agentic-skills-framework)
 
 ## Contributing
 

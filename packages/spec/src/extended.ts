@@ -1,6 +1,6 @@
 /**
  * Extended specification types — security, testing, tool-binding, composition.
- * These extend the base agentskills.io spec with enterprise-grade features.
+ * These extend the base Agent Skills spec with enterprise-grade features.
  * 100% backward-compatible: all extended fields are optional.
  */
 

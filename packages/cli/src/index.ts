@@ -25,7 +25,7 @@ program
 
 program
   .command("validate <path>")
-  .description("Validate a skill against the agentskills.io specification")
+  .description("Validate a skill against the Agent Skills specification")
   .option("-s, --strict", "Enable strict mode (treat warnings as errors)")
   .action(validateCommand);
 

@@ -1,6 +1,6 @@
 # @skillscraft/core
 
-Parse, validate, and lint Agent Skills against the [agentskills.io](https://agentskills.io) specification.
+Parse, validate, and lint Agent Skills against the Agent Skills specification.
 
 ## Installation
 
@@ -65,4 +65,4 @@ Apache-2.0
 ## Links
 
 - [Main repository](https://github.com/Pratiyush/agentic-skills-framework)
-- [Agent Skills specification](https://agentskills.io)
+- [Documentation](https://pratiyush.github.io/agentic-skills-framework)

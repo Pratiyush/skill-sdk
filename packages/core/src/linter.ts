@@ -121,7 +121,7 @@ export function lintSkill(skill: ParsedSkill): LintResult {
           message: `Found generic instruction "${phrase}". Replace with specific, actionable guidance.`,
           severity: "warn",
           line: i + 1,
-          fix: "Replace with a concrete instruction. See agentskills.io best practices.",
+          fix: "Replace with a concrete instruction tied to your skill's purpose.",
         });
       }
     }

@@ -7,7 +7,7 @@ import type {
 } from "@skillscraft/spec";
 
 /**
- * Validate a parsed skill against the agentskills.io specification.
+ * Validate a parsed skill against the Agent Skills specification.
  *
  * @param skill - A parsed skill from `parseSkill()`.
  * @returns Validation result with errors and warnings.

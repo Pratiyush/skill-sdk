@@ -1,6 +1,6 @@
 # @skillscraft/spec
 
-TypeScript types, constants, and JSON schemas for the [Agent Skills specification](https://agentskills.io).
+TypeScript types, constants, and JSON schemas for the Agent Skills specification.
 
 ## Installation
 
@@ -10,7 +10,7 @@ npm install @skillscraft/spec
 
 ## What it exports
 
-**Core types** -- mirror the agentskills.io specification exactly:
+**Core types** -- mirror the Agent Skills specification exactly:
 
 - `SkillFrontmatter` -- YAML frontmatter fields (name, description, license, compatibility, metadata, allowed-tools)
 - `ParsedSkill` -- full parsed SKILL.md (frontmatter + body + file paths)
@@ -56,4 +56,4 @@ Apache-2.0
 ## Links
 
 - [Main repository](https://github.com/Pratiyush/agentic-skills-framework)
-- [Agent Skills specification](https://agentskills.io)
+- [Documentation](https://pratiyush.github.io/agentic-skills-framework)

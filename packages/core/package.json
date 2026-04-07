@@ -1,7 +1,7 @@
 {
   "name": "@skillscraft/core",
   "version": "0.9.0",
-  "description": "Parse, validate, and lint Agent Skills (agentskills.io)",
+  "description": "Parse, validate, and lint Agent Skills",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

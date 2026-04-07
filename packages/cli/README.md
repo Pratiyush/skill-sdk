@@ -1,6 +1,6 @@
 # @skillscraft/cli
 
-CLI for building, validating, and linting Agent Skills against the [agentskills.io](https://agentskills.io) specification.
+CLI for building, validating, and linting Agent Skills against the Agent Skills specification.
 
 ## Installation
 
@@ -26,7 +26,7 @@ skill init my-new-skill --template basic
 
 ### `skill validate <path>`
 
-Validate a skill against the agentskills.io specification.
+Validate a skill against the Agent Skills specification.
 
 ```bash
 skill validate ./my-skill/SKILL.md
@@ -70,4 +70,5 @@ Apache-2.0
 ## Links
 
 - [Main repository](https://github.com/Pratiyush/agentic-skills-framework)
-- [Agent Skills specification](https://agentskills.io)
+- [Documentation](https://pratiyush.github.io/agentic-skills-framework)
+- [Marketplace](https://github.com/Pratiyush/skillscraft-hub)

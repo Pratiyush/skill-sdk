@@ -1,5 +1,5 @@
 /**
- * Core Agent Skills types — mirrors agentskills.io/specification exactly.
+ * Core Agent Skills types — mirrors the Agent Skills specification.
  */
 
 /** Key-value metadata map (string keys, string values). */
