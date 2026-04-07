@@ -45,4 +45,13 @@ describe("skill.schema.json", () => {
   it("enforces compatibility maxLength from SPEC_LIMITS", () => {
     expect(schema.properties.compatibility.maxLength).toBe(500);
   });
+
+  it("name pattern rejects consecutive hyphens", () => {
+    const pattern = new RegExp(schema.properties.name.pattern);
+    expect(pattern.test("my-skill")).toBe(true);
+    expect(pattern.test("a-b-c")).toBe(true);
+    expect(pattern.test("double--hyphen")).toBe(false);
+    expect(pattern.test("-leading")).toBe(false);
+    expect(pattern.test("trailing-")).toBe(false);
+  });
 });

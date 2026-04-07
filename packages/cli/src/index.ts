@@ -1,5 +1,8 @@
 import { Command } from "commander";
 import { initCommand } from "./commands/init.js";
+
+// Injected by tsup at build time — see tsup.config.ts
+declare const __CLI_VERSION__: string;
 import { validateCommand } from "./commands/validate.js";
 import { lintCommand } from "./commands/lint.js";
 import { installCommand } from "./commands/install.js";
@@ -12,7 +15,7 @@ const program = new Command();
 program
   .name("skill")
   .description("CLI for building, validating, and linting Agent Skills")
-  .version("0.9.0");
+  .version(__CLI_VERSION__);
 
 program
   .command("init <name>")
@@ -35,7 +38,11 @@ program
 program
   .command("install <path>")
   .description("Install a skill for a specific agent or generically")
-  .option("-t, --target <target>", "Target agent: claude, copilot, codex, generic", "generic")
+  .option(
+    "-t, --target <target>",
+    "Target agent: claude, copilot, codex, cursor, windsurf, aider, goose, gemini, junie, roo-code, opencode, amp, open-claw, generic",
+    "generic"
+  )
   .option("-s, --scope <scope>", "Install scope: project or user", "project")
   .option("-f, --force", "Overwrite existing installation")
   .action(installCommand);

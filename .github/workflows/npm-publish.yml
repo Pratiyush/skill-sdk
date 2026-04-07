@@ -47,11 +47,12 @@ jobs:
 
       - name: Bump version (patch)
         run: |
-          NEW_VERSION=$(node -e "
-            const pkg = require('./packages/spec/package.json');
+          # Use node -p with fs.readFileSync (robust against ESM/CJS changes)
+          NEW_VERSION=$(node -p "
+            const pkg = JSON.parse(require('fs').readFileSync('./packages/spec/package.json','utf8'));
             const parts = pkg.version.split('.');
             parts[2] = parseInt(parts[2]) + 1;
-            console.log(parts.join('.'));
+            parts.join('.');
           ")
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
@@ -62,35 +63,28 @@ jobs:
             cd ../..
           done
 
-          # Update workspace dependency versions
-          cd packages/core
-          npm pkg set "dependencies.@skillscraft/spec=$NEW_VERSION"
-          cd ../cli
-          npm pkg set "dependencies.@skillscraft/core=$NEW_VERSION"
-          npm pkg set "dependencies.@skillscraft/spec=$NEW_VERSION"
-          cd ../..
-
       - name: Rebuild with new versions
         run: pnpm install --no-frozen-lockfile && pnpm build
 
       - name: Publish @skillscraft/spec
-        run: cd packages/spec && npm publish --access public --provenance
+        run: cd packages/spec && pnpm publish --access public --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @skillscraft/core
-        run: cd packages/core && npm publish --access public --provenance
+        run: cd packages/core && pnpm publish --access public --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @skillscraft/cli
-        run: cd packages/cli && npm publish --access public --provenance
+        run: cd packages/cli && pnpm publish --access public --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Commit version bump and tag
         run: |
-          git add -A
+          # Explicit file list — never use git add -A (prevents secrets leaking)
+          git add packages/spec/package.json packages/core/package.json packages/cli/package.json pnpm-lock.yaml
           git commit -m "v${{ env.NEW_VERSION }}"
           git tag -a "v${{ env.NEW_VERSION }}" -m "v${{ env.NEW_VERSION }}"
           git push origin master --tags

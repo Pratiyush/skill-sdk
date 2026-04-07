@@ -1,25 +1,26 @@
 import { join } from "node:path";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
+import { parseSkill } from "@skillscraft/core";
 
 /** Target agent install paths — mirrors install.ts. */
 const TARGET_PATHS: Record<string, Record<string, string>> = {
-  claude: {
-    project: ".claude/skills",
-    user: join(homedir(), ".claude", "skills"),
-  },
-  copilot: {
-    project: ".github/skills",
-    user: "",
-  },
-  codex: {
-    project: ".codex/skills",
-    user: "",
-  },
-  generic: {
-    project: ".agents/skills",
-    user: join(homedir(), ".agents", "skills"),
-  },
+  claude: { project: ".claude/skills", user: join(homedir(), ".claude", "skills") },
+  "claude-code": { project: ".claude/skills", user: join(homedir(), ".claude", "skills") },
+  copilot: { project: ".github/skills", user: "" },
+  codex: { project: ".codex/skills", user: "" },
+  cursor: { project: ".cursor/skills", user: join(homedir(), ".cursor", "skills") },
+  windsurf: { project: ".windsurf/skills", user: join(homedir(), ".windsurf", "skills") },
+  aider: { project: ".aider/skills", user: join(homedir(), ".aider", "skills") },
+  goose: { project: ".goose/skills", user: join(homedir(), ".goose", "skills") },
+  gemini: { project: ".gemini/skills", user: join(homedir(), ".gemini", "skills") },
+  "gemini-cli": { project: ".gemini/skills", user: join(homedir(), ".gemini", "skills") },
+  junie: { project: ".junie/skills", user: "" },
+  "roo-code": { project: ".roo/skills", user: join(homedir(), ".roo", "skills") },
+  opencode: { project: ".opencode/skills", user: join(homedir(), ".opencode", "skills") },
+  amp: { project: ".amp/skills", user: join(homedir(), ".amp", "skills") },
+  "open-claw": { project: ".openclaw/skills", user: join(homedir(), ".openclaw", "skills") },
+  generic: { project: ".agents/skills", user: join(homedir(), ".agents", "skills") },
 };
 
 interface ListOptions {
@@ -27,7 +28,9 @@ interface ListOptions {
   scope?: string;
 }
 
-function scanDir(dir: string): Array<{ name: string; description: string; path: string }> {
+async function scanDir(
+  dir: string
+): Promise<Array<{ name: string; description: string; path: string }>> {
   if (!existsSync(dir)) return [];
   const entries = readdirSync(dir, { withFileTypes: true });
   const skills: Array<{ name: string; description: string; path: string }> = [];
@@ -37,19 +40,18 @@ function scanDir(dir: string): Array<{ name: string; description: string; path: 
     const skillMd = join(dir, entry.name, "SKILL.md");
     if (!existsSync(skillMd)) continue;
 
-    const content = readFileSync(skillMd, "utf-8");
-    const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    let name = entry.name;
-    let description = "";
-
-    if (match) {
-      const nameMatch = match[1].match(/^name:\s*(.+)$/m);
-      const descMatch = match[1].match(/^description:\s*[>|]?\s*\n?\s*(.+)$/m);
-      if (nameMatch) name = nameMatch[1].trim();
-      if (descMatch) description = descMatch[1].trim();
+    // Use the shared parser — handles block scalars, multiline strings, etc.
+    try {
+      const parsed = await parseSkill(skillMd);
+      skills.push({
+        name: parsed.frontmatter.name || entry.name,
+        description: (parsed.frontmatter.description || "").replace(/\n/g, " ").trim(),
+        path: join(dir, entry.name),
+      });
+    } catch {
+      // Skip unparseable skills
+      skills.push({ name: entry.name, description: "", path: join(dir, entry.name) });
     }
-
-    skills.push({ name, description, path: join(dir, entry.name) });
   }
 
   return skills;
@@ -72,7 +74,7 @@ export async function listCommand(options: ListOptions): Promise<void> {
       const dir = scope === "user" ? config.user : config.project;
       if (!dir) continue;
 
-      const skills = scanDir(dir);
+      const skills = await scanDir(dir);
       if (skills.length === 0) continue;
 
       totalFound += skills.length;

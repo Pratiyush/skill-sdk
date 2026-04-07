@@ -18,13 +18,6 @@ export const LINT_RULES: LintRule[] = [
     severity: "warn",
   },
   {
-    id: "name-matches-dir",
-    name: "Name Matches Directory",
-    description:
-      "The `name` frontmatter field must match the parent directory name.",
-    severity: "error",
-  },
-  {
     id: "no-generic-instructions",
     name: "No Generic Instructions",
     description:

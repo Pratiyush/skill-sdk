@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { SKILL_NAME_REGEX } from "@skillscraft/spec";
 
 interface InitOptions {
   template: string;
@@ -93,6 +94,18 @@ export async function initCommand(
   name: string,
   options: InitOptions
 ): Promise<void> {
+  // Validate name before creating directory (prevents bad skill names)
+  if (!SKILL_NAME_REGEX.test(name)) {
+    console.error(`Error: "${name}" is not a valid skill name.`);
+    console.error(
+      "Names must be 1-64 chars, lowercase alphanumeric + hyphens only,"
+    );
+    console.error(
+      "with no leading/trailing/consecutive hyphens. Example: my-skill"
+    );
+    process.exit(1);
+  }
+
   const template = TEMPLATES[options.template];
   if (!template) {
     console.error(

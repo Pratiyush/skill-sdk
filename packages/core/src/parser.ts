@@ -14,7 +14,8 @@ const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
  */
 export async function parseSkill(filePath: string): Promise<ParsedSkill> {
   const absolutePath = resolve(filePath);
-  const content = await readFile(absolutePath, "utf-8");
+  // Strip UTF-8 BOM if present (some editors add it automatically)
+  const content = (await readFile(absolutePath, "utf-8")).replace(/^\uFEFF/, "");
 
   const match = content.match(FRONTMATTER_REGEX);
   if (!match) {
