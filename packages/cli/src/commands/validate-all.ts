@@ -5,6 +5,15 @@ import { parseSkill, validateSkill, lintSkill } from "@skillscraft/core";
 interface ValidateAllOptions {
   dir?: string;
   strict?: boolean;
+  json?: boolean;
+}
+
+interface ValidateAllResult {
+  path: string;
+  valid: boolean;
+  errors: Array<{ severity: string; message: string }>;
+  lintDiagnostics: Array<{ severity: string; message: string }>;
+  status: "passed" | "failed" | "warning";
 }
 
 /**
@@ -41,6 +50,7 @@ export async function validateAllCommand(
 ): Promise<void> {
   const rootDir = options.dir ? resolve(options.dir) : process.cwd();
   const strict = options.strict || false;
+  const json = options.json || false;
 
   // Discover skills in skills/ and examples/
   const dirs = [join(rootDir, "skills"), join(rootDir, "examples")];
@@ -51,15 +61,28 @@ export async function validateAllCommand(
   }
 
   if (skillPaths.length === 0) {
-    console.log("No skills found in skills/ or examples/.");
+    if (json) {
+      process.stdout.write(
+        JSON.stringify(
+          { passed: 0, failed: 0, warnings: 0, results: [] },
+          null,
+          2
+        ) + "\n"
+      );
+    } else {
+      console.log("No skills found in skills/ or examples/.");
+    }
     return;
   }
 
-  console.log(`Found ${skillPaths.length} skill(s). Validating...\n`);
+  if (!json) {
+    console.log(`Found ${skillPaths.length} skill(s). Validating...\n`);
+  }
 
   let passed = 0;
   let failed = 0;
   let warnings = 0;
+  const results: ValidateAllResult[] = [];
 
   for (const skillPath of skillPaths) {
     const relPath = skillPath.slice(rootDir.length + 1);
@@ -71,34 +94,82 @@ export async function validateAllCommand(
 
       const lintIssues = lint.diagnostics.length;
 
+      let status: "passed" | "failed" | "warning" = "passed";
+
       if (!validation.valid) {
         failed++;
-        console.log(`  \u2717 ${relPath}`);
-        for (const err of validation.errors) {
-          console.log(`    [${err.severity}] ${err.message}`);
+        status = "failed";
+        if (!json) {
+          console.log(`  \u2717 ${relPath}`);
+          for (const err of validation.errors) {
+            console.log(`    [${err.severity}] ${err.message}`);
+          }
         }
       } else if (strict && lintIssues > 0) {
         failed++;
-        console.log(`  \u2717 ${relPath} (lint issues in strict mode)`);
-        for (const d of lint.diagnostics) {
-          console.log(`    [${d.severity}] ${d.message}`);
+        status = "failed";
+        if (!json) {
+          console.log(`  \u2717 ${relPath} (lint issues in strict mode)`);
+          for (const d of lint.diagnostics) {
+            console.log(`    [${d.severity}] ${d.message}`);
+          }
         }
       } else if (lintIssues > 0) {
         warnings++;
         passed++;
-        console.log(`  \u2713 ${relPath} (${lintIssues} lint warning(s))`);
+        status = "warning";
+        if (!json) {
+          console.log(`  \u2713 ${relPath} (${lintIssues} lint warning(s))`);
+        }
       } else {
         passed++;
-        console.log(`  \u2713 ${relPath}`);
+        if (!json) {
+          console.log(`  \u2713 ${relPath}`);
+        }
       }
+
+      results.push({
+        path: relPath,
+        valid: validation.valid,
+        errors: validation.errors.map((e) => ({
+          severity: e.severity,
+          message: e.message,
+        })),
+        lintDiagnostics: lint.diagnostics.map((d) => ({
+          severity: d.severity,
+          message: d.message,
+        })),
+        status,
+      });
     } catch (err) {
       failed++;
-      console.log(`  \u2717 ${relPath}`);
-      console.log(`    Parse error: ${(err as Error).message}`);
+      if (!json) {
+        console.log(`  \u2717 ${relPath}`);
+        console.log(`    Parse error: ${(err as Error).message}`);
+      }
+      results.push({
+        path: relPath,
+        valid: false,
+        errors: [
+          { severity: "error", message: `Parse error: ${(err as Error).message}` },
+        ],
+        lintDiagnostics: [],
+        status: "failed",
+      });
     }
   }
 
-  console.log(`\n${passed} passed, ${failed} failed, ${warnings} with warnings`);
+  if (json) {
+    process.stdout.write(
+      JSON.stringify(
+        { passed, failed, warnings, results },
+        null,
+        2
+      ) + "\n"
+    );
+  } else {
+    console.log(`\n${passed} passed, ${failed} failed, ${warnings} with warnings`);
+  }
 
   if (failed > 0) {
     process.exit(1);

@@ -4,6 +4,7 @@ import { parseSkill, lintSkill } from "@skillscraft/core";
 
 interface LintOptions {
   fix?: boolean;
+  json?: boolean;
 }
 
 const SEVERITY_ICONS: Record<string, string> = {
@@ -30,6 +31,22 @@ export async function lintCommand(
   try {
     const skill = await parseSkill(skillMdPath);
     const result = lintSkill(skill);
+
+    if (options.json) {
+      const jsonResult = {
+        passed: result.passed,
+        diagnostics: result.diagnostics,
+        path: skillMdPath,
+      };
+      process.stdout.write(JSON.stringify(jsonResult, null, 2) + "\n");
+      const errorCount = result.diagnostics.filter(
+        (d) => d.severity === "error"
+      ).length;
+      if (errorCount > 0) {
+        process.exit(1);
+      }
+      return;
+    }
 
     if (result.diagnostics.length === 0) {
       console.log(`\n  ✓ ${skillMdPath} passes all lint rules\n`);
@@ -72,7 +89,22 @@ export async function lintCommand(
       process.exit(1);
     }
   } catch (err) {
-    console.error(`\n  ✗ ${(err as Error).message}\n`);
+    if (options.json) {
+      const jsonResult = {
+        passed: false,
+        diagnostics: [
+          {
+            rule: "parse.error",
+            message: (err as Error).message,
+            severity: "error" as const,
+          },
+        ],
+        path: skillMdPath,
+      };
+      process.stdout.write(JSON.stringify(jsonResult, null, 2) + "\n");
+    } else {
+      console.error(`\n  ✗ ${(err as Error).message}\n`);
+    }
     process.exit(1);
   }
 }

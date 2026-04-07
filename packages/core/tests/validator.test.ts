@@ -62,4 +62,22 @@ describe("validateSkill", () => {
     );
     expect(dirErrors.length).toBe(1);
   });
+
+  it("validates a skill with extended fields (security, testing, composition) successfully", async () => {
+    const skill = await parseSkill(join(FIXTURES, "extended-skill/SKILL.md"));
+    const result = validateSkill(skill);
+
+    // No errors should be raised for well-formed extended fields
+    const errors = result.errors.filter((e) => e.severity === "error");
+    expect(errors).toHaveLength(0);
+    expect(result.valid).toBe(true);
+
+    // No "unknown field" warnings for extended fields either
+    const unknownWarnings = result.errors.filter(
+      (e) =>
+        e.rule === "frontmatter.unknownField" &&
+        ["security", "testing", "composition", "tools"].includes(e.field)
+    );
+    expect(unknownWarnings).toHaveLength(0);
+  });
 });

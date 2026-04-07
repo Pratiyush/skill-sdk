@@ -26,6 +26,7 @@ const TARGET_PATHS: Record<string, Record<string, string>> = {
 interface ListOptions {
   target?: string;
   scope?: string;
+  json?: boolean;
 }
 
 async function scanDir(
@@ -61,12 +62,22 @@ export async function listCommand(options: ListOptions): Promise<void> {
   const targets = options.target ? [options.target] : Object.keys(TARGET_PATHS);
   const scopes = options.scope ? [options.scope] : ["project", "user"];
 
+  const collectedSkills: Array<{
+    name: string;
+    description: string;
+    target: string;
+    scope: string;
+    path: string;
+  }> = [];
+
   let totalFound = 0;
 
   for (const target of targets) {
     const config = TARGET_PATHS[target];
     if (!config) {
-      console.error(`Unknown target: ${target}`);
+      if (!options.json) {
+        console.error(`Unknown target: ${target}`);
+      }
       continue;
     }
 
@@ -78,14 +89,34 @@ export async function listCommand(options: ListOptions): Promise<void> {
       if (skills.length === 0) continue;
 
       totalFound += skills.length;
-      console.log(`\n${target} (${scope}):`);
-      console.log(`  Path: ${dir}`);
 
-      for (const skill of skills) {
-        const desc = skill.description ? ` — ${skill.description}` : "";
-        console.log(`  - ${skill.name}${desc}`);
+      if (options.json) {
+        for (const skill of skills) {
+          collectedSkills.push({
+            name: skill.name,
+            description: skill.description,
+            target,
+            scope,
+            path: skill.path,
+          });
+        }
+      } else {
+        console.log(`\n${target} (${scope}):`);
+        console.log(`  Path: ${dir}`);
+
+        for (const skill of skills) {
+          const desc = skill.description ? ` — ${skill.description}` : "";
+          console.log(`  - ${skill.name}${desc}`);
+        }
       }
     }
+  }
+
+  if (options.json) {
+    process.stdout.write(
+      JSON.stringify({ skills: collectedSkills }, null, 2) + "\n"
+    );
+    return;
   }
 
   if (totalFound === 0) {

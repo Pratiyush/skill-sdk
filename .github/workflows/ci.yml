@@ -11,10 +11,12 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         node-version: [22, 24]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v6
@@ -38,4 +40,12 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Security audit
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true  # don't fail build on audit issues for now (alert only)
+
+      - name: Coverage report
+        run: pnpm --filter @skillscraft/core test --coverage
+        continue-on-error: true  # don't fail build on coverage for now (just generate)
 

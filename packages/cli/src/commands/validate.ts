@@ -4,6 +4,7 @@ import { parseSkill, validateSkill } from "@skillscraft/core";
 
 interface ValidateOptions {
   strict?: boolean;
+  json?: boolean;
 }
 
 export async function validateCommand(
@@ -28,6 +29,20 @@ export async function validateCommand(
 
     const errors = result.errors.filter((e) => e.severity === "error");
     const warnings = result.errors.filter((e) => e.severity === "warning");
+
+    if (options.json) {
+      const jsonResult = {
+        valid: result.valid,
+        errors,
+        warnings,
+        path: skillMdPath,
+      };
+      process.stdout.write(JSON.stringify(jsonResult, null, 2) + "\n");
+      if (errors.length > 0 || (options.strict && warnings.length > 0)) {
+        process.exit(1);
+      }
+      return;
+    }
 
     if (errors.length === 0 && warnings.length === 0) {
       console.log(`\n  ✓ ${skillMdPath} is valid\n`);
@@ -54,7 +69,24 @@ export async function validateCommand(
       process.exit(1);
     }
   } catch (err) {
-    console.error(`\n  ✗ ${(err as Error).message}\n`);
+    if (options.json) {
+      const jsonResult = {
+        valid: false,
+        errors: [
+          {
+            field: "file",
+            message: (err as Error).message,
+            severity: "error" as const,
+            rule: "parse.error",
+          },
+        ],
+        warnings: [],
+        path: skillMdPath,
+      };
+      process.stdout.write(JSON.stringify(jsonResult, null, 2) + "\n");
+    } else {
+      console.error(`\n  ✗ ${(err as Error).message}\n`);
+    }
     process.exit(1);
   }
 }

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["packages/core/src/index.ts", "packages/spec/src/index.ts"],
+  "out": "docs/api",
+  "readme": "none",
+  "name": "Agentic Skills Framework API",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "categorizeByGroup": true,
+  "navigation": {
+    "includeCategories": true
+  },
+  "tsconfig": "tsconfig.typedoc.json",
+  "skipErrorChecking": true
+}

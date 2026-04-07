@@ -52,4 +52,52 @@ describe("parseSkill", () => {
     expect(skill.frontmatter["allowed-tools"]).toBe("Bash(git:*) Read");
     await rm(dir, { recursive: true });
   });
+
+  describe("edge cases", () => {
+    it("strips UTF-8 BOM and parses normally", async () => {
+      const skill = await parseSkill(join(FIXTURES, "bom-skill/SKILL.md"));
+
+      expect(skill.frontmatter.name).toBe("bom-skill");
+      expect(skill.frontmatter.description).toContain("UTF-8 BOM");
+      expect(skill.body).toContain("# Skill Body");
+    });
+
+    it("preserves unicode characters in description (emoji, Chinese, Arabic)", async () => {
+      const skill = await parseSkill(join(FIXTURES, "unicode-name/SKILL.md"));
+
+      expect(skill.frontmatter.name).toBe("unicode-name");
+      expect(skill.frontmatter.description).toContain("🤖");
+      expect(skill.frontmatter.description).toContain("你好");
+      expect(skill.frontmatter.description).toContain("مرحبا");
+    });
+
+    it("accepts a 64-character name", async () => {
+      const skill = await parseSkill(join(FIXTURES, "max-length-name/SKILL.md"));
+
+      expect(skill.frontmatter.name).toHaveLength(64);
+      expect(skill.frontmatter.name).toBe("a".repeat(64));
+    });
+
+    it("accepts a 1024-character description", async () => {
+      const skill = await parseSkill(join(FIXTURES, "max-length-desc/SKILL.md"));
+
+      expect(skill.frontmatter.description).toHaveLength(1024);
+      expect(skill.frontmatter.description).toBe("a".repeat(1024));
+    });
+
+    it("handles Windows CRLF line endings", async () => {
+      const skill = await parseSkill(join(FIXTURES, "crlf-skill/SKILL.md"));
+
+      expect(skill.frontmatter.name).toBe("crlf-skill");
+      expect(skill.frontmatter.description).toContain("CRLF line endings");
+      expect(skill.body).toContain("# Skill Body");
+    });
+
+    it("returns empty body when SKILL.md has only frontmatter", async () => {
+      const skill = await parseSkill(join(FIXTURES, "empty-body/SKILL.md"));
+
+      expect(skill.frontmatter.name).toBe("empty-body");
+      expect(skill.body).toBe("");
+    });
+  });
 });

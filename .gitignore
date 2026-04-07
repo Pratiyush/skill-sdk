@@ -12,3 +12,7 @@ playwright-report/
 test-results/
 .skill-package/
 .npmrc
+
+# Generated API docs (keep directory via .gitkeep)
+docs/api/*
+!docs/api/.gitkeep

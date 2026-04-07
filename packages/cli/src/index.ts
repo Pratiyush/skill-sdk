@@ -27,12 +27,14 @@ program
   .command("validate <path>")
   .description("Validate a skill against the Agent Skills specification")
   .option("-s, --strict", "Enable strict mode (treat warnings as errors)")
+  .option("--json", "Output result as JSON")
   .action(validateCommand);
 
 program
   .command("lint <path>")
   .description("Lint a skill for best practices")
   .option("--fix", "Show fix suggestions")
+  .option("--json", "Output result as JSON")
   .action(lintCommand);
 
 program
@@ -52,6 +54,7 @@ program
   .description("List installed skills")
   .option("-t, --target <target>", "Filter by target: claude, copilot, codex, generic")
   .option("-s, --scope <scope>", "Filter by scope: project or user")
+  .option("--json", "Output result as JSON")
   .action(listCommand);
 
 program
@@ -66,6 +69,7 @@ program
   .description("Validate all skills in skills/ and examples/ directories")
   .option("-d, --dir <path>", "Root directory to search", ".")
   .option("-s, --strict", "Treat lint warnings as errors")
+  .option("--json", "Output result as JSON")
   .action(validateAllCommand);
 
 program.parse();

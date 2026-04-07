@@ -173,6 +173,141 @@ export function validateSkill(skill: ParsedSkill): ValidationResult {
     });
   }
 
+  // --- security field (optional, extended spec) ---
+  const anyFrontmatter = frontmatter as unknown as Record<string, unknown>;
+  if (anyFrontmatter.security !== undefined) {
+    const sec = anyFrontmatter.security;
+    if (typeof sec !== "object" || sec === null || Array.isArray(sec)) {
+      errors.push({
+        field: "security",
+        message: "The `security` field must be an object.",
+        severity: "error",
+        rule: "security.type",
+      });
+    } else {
+      const secObj = sec as Record<string, unknown>;
+      if (secObj.capabilities !== undefined) {
+        if (!Array.isArray(secObj.capabilities)) {
+          errors.push({
+            field: "security.capabilities",
+            message: "`security.capabilities` must be an array of strings.",
+            severity: "error",
+            rule: "security.capabilities.type",
+          });
+        } else {
+          for (let i = 0; i < secObj.capabilities.length; i++) {
+            if (typeof secObj.capabilities[i] !== "string") {
+              errors.push({
+                field: `security.capabilities[${i}]`,
+                message: "Each capability must be a string.",
+                severity: "error",
+                rule: "security.capabilities.itemType",
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // --- testing field (optional, extended spec) ---
+  if (anyFrontmatter.testing !== undefined) {
+    const tst = anyFrontmatter.testing;
+    if (typeof tst !== "object" || tst === null || Array.isArray(tst)) {
+      errors.push({
+        field: "testing",
+        message: "The `testing` field must be an object.",
+        severity: "error",
+        rule: "testing.type",
+      });
+    } else {
+      const tstObj = tst as Record<string, unknown>;
+      if (tstObj.scenarios !== undefined) {
+        if (!Array.isArray(tstObj.scenarios)) {
+          errors.push({
+            field: "testing.scenarios",
+            message: "`testing.scenarios` must be an array.",
+            severity: "error",
+            rule: "testing.scenarios.type",
+          });
+        } else {
+          for (let i = 0; i < tstObj.scenarios.length; i++) {
+            const scenario = tstObj.scenarios[i];
+            if (
+              typeof scenario !== "object" ||
+              scenario === null ||
+              Array.isArray(scenario)
+            ) {
+              errors.push({
+                field: `testing.scenarios[${i}]`,
+                message: "Each scenario must be an object.",
+                severity: "error",
+                rule: "testing.scenarios.itemType",
+              });
+              continue;
+            }
+            const scenObj = scenario as Record<string, unknown>;
+            if (typeof scenObj.name !== "string") {
+              errors.push({
+                field: `testing.scenarios[${i}].name`,
+                message: "Each scenario must have a `name` string.",
+                severity: "error",
+                rule: "testing.scenarios.name",
+              });
+            }
+            if (typeof scenObj.expectedOutput !== "string") {
+              errors.push({
+                field: `testing.scenarios[${i}].expectedOutput`,
+                message: "Each scenario must have an `expectedOutput` string.",
+                severity: "error",
+                rule: "testing.scenarios.expectedOutput",
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // --- composition field (optional, extended spec) ---
+  if (anyFrontmatter.composition !== undefined) {
+    const comp = anyFrontmatter.composition;
+    if (typeof comp !== "object" || comp === null || Array.isArray(comp)) {
+      errors.push({
+        field: "composition",
+        message: "The `composition` field must be an object.",
+        severity: "error",
+        rule: "composition.type",
+      });
+    } else {
+      const compObj = comp as Record<string, unknown>;
+      if (
+        compObj.dependencies !== undefined &&
+        !Array.isArray(compObj.dependencies)
+      ) {
+        errors.push({
+          field: "composition.dependencies",
+          message: "`composition.dependencies` must be an array.",
+          severity: "error",
+          rule: "composition.dependencies.type",
+        });
+      }
+    }
+  }
+
+  // --- tools field (optional, extended spec) ---
+  if (anyFrontmatter.tools !== undefined) {
+    const tools = anyFrontmatter.tools;
+    if (typeof tools !== "object" || tools === null || Array.isArray(tools)) {
+      errors.push({
+        field: "tools",
+        message: "The `tools` field must be an object.",
+        severity: "error",
+        rule: "tools.type",
+      });
+    }
+  }
+
   // --- unknown fields (warning) ---
   const knownFields = new Set([
     "name",
@@ -181,6 +316,10 @@ export function validateSkill(skill: ParsedSkill): ValidationResult {
     "compatibility",
     "metadata",
     "allowed-tools",
+    "security",
+    "testing",
+    "composition",
+    "tools",
   ]);
   for (const key of Object.keys(frontmatter)) {
     if (!knownFields.has(key)) {

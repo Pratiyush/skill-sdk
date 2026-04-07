@@ -36,6 +36,84 @@
     "allowed-tools": {
       "type": "string",
       "description": "Space-delimited list of pre-approved tools"
+    },
+    "security": {
+      "type": "object",
+      "description": "Security manifest declaring capabilities, credentials, and network access",
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Capabilities this skill requires (e.g. read-fs, write-fs, network)"
+        },
+        "credentials": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named credentials this skill needs access to"
+        },
+        "network": {
+          "type": "object",
+          "description": "Network access policy",
+          "properties": {
+            "allowed": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Allowed hostnames or URL prefixes"
+            }
+          }
+        }
+      }
+    },
+    "testing": {
+      "type": "object",
+      "description": "Test scenarios for this skill",
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "description": "List of test scenarios",
+          "items": {
+            "type": "object",
+            "required": ["name", "expectedOutput"],
+            "properties": {
+              "name": { "type": "string" },
+              "input": { "type": "string" },
+              "expectedOutput": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "composition": {
+      "type": "object",
+      "description": "Skill composition and dependencies",
+      "properties": {
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Names of skills this skill depends on"
+        },
+        "replaces": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Names of skills this skill replaces"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "description": "Tool bindings and dependencies",
+      "properties": {
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tools this skill depends on"
+        },
+        "bindings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific tool bindings"
+        }
+      }
     }
   },
   "additionalProperties": false
