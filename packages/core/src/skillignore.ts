@@ -62,15 +62,18 @@ export function loadSkillIgnore(skillDir: string): string[] {
  * Supports: exact match, directory trailing slash, * glob, .* prefix glob.
  */
 export function isIgnored(relativePath: string, patterns: string[]): boolean {
+  // Normalize to forward slashes for cross-platform consistency
+  const normalized = relativePath.replace(/\\/g, "/");
+
   // Protected files are never ignored
-  const name = basename(relativePath);
+  const name = basename(normalized);
   if (PROTECTED_FILES.includes(name)) return false;
 
   // Also never ignore .skillignore itself from source reads
   if (name === ".skillignore") return false;
 
   for (const pattern of patterns) {
-    if (matchPattern(relativePath, pattern)) return true;
+    if (matchPattern(normalized, pattern)) return true;
   }
   return false;
 }

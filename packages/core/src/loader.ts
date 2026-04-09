@@ -3,6 +3,11 @@ import { join, relative } from "node:path";
 import type { SkillManifest, SkillFile } from "@skillscraft/spec";
 import { parseSkill } from "./parser.js";
 
+/** Normalize path separators to forward slashes for cross-platform consistency. */
+function normalizeSep(p: string): string {
+  return p.replace(/\\/g, "/");
+}
+
 /**
  * Load a complete skill manifest from a directory.
  *
@@ -36,7 +41,7 @@ async function listFiles(dirPath: string): Promise<SkillFile[]> {
       } else {
         const fileStat = await stat(fullPath);
         files.push({
-          relativePath: relative(dirPath, fullPath),
+          relativePath: normalizeSep(relative(dirPath, fullPath)),
           absolutePath: fullPath,
           size: fileStat.size,
         });
