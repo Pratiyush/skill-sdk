@@ -4,7 +4,7 @@
 
 **The TypeScript toolkit for building, validating, and shipping Agent Skills.**
 
-[![npm version](https://img.shields.io/npm/v/@skillscraft/core?style=flat-square)](https://www.npmjs.com/package/@skillscraft/core)
+[![npm version](https://img.shields.io/badge/npm-pre--release-orange?style=flat-square)](https://www.npmjs.com/package/@skillscraft/core)
 [![CI](https://img.shields.io/github/actions/workflow/status/Pratiyush/agentic-skills-framework/ci.yml?style=flat-square)](https://github.com/Pratiyush/agentic-skills-framework/actions)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
@@ -90,6 +90,18 @@ skill lint ./my-skill --fix            # Show fix suggestions
 | `defaults-over-menus` | warn | Clear default over option menus |
 | `gotchas-present` | info | Suggests gotchas section |
 
+> **`--strict` mode**: When `--strict` is passed to `skill validate` or `skill validate-all`, all `warn`-level lint diagnostics are promoted to errors and will fail the check. Use this in CI pipelines.
+
+### `skill list`
+
+List installed skills.
+
+```bash
+skill list                              # List all installed skills
+skill list -t claude                    # Filter by target agent
+skill list -s user --json               # JSON output, user scope only
+```
+
 ### `skill install <path>`
 
 Install a skill for a specific agent.
@@ -109,6 +121,26 @@ Remove a previously installed skill.
 skill uninstall my-skill                # Uninstall from generic agent
 skill uninstall my-skill -t claude      # Uninstall from Claude Code
 skill uninstall my-skill -s user        # Uninstall from user scope
+```
+
+### `skill publish <path>`
+
+Package and prepare a skill for publishing.
+
+```bash
+skill publish ./my-skill                # Package for npm
+skill publish ./my-skill --dry-run      # Preview without changes
+skill publish ./my-skill -o ./out       # Custom output directory
+```
+
+### `skill validate-all`
+
+Validate all skills in a directory tree.
+
+```bash
+skill validate-all                      # Validate skills/ and examples/
+skill validate-all -d ./my-skills       # Custom root directory
+skill validate-all --strict --json      # Strict mode with JSON output
 ```
 
 ## Programmatic API
@@ -141,15 +173,23 @@ for (const d of lint.diagnostics) {
 
 | Package | Description | npm |
 |---------|-------------|-----|
-| [`@skillscraft/spec`](packages/spec) | TypeScript types + JSON schemas | [![npm](https://img.shields.io/npm/v/@skillscraft/spec?style=flat-square)](https://www.npmjs.com/package/@skillscraft/spec) |
-| [`@skillscraft/core`](packages/core) | Parser, validator, linter | [![npm](https://img.shields.io/npm/v/@skillscraft/core?style=flat-square)](https://www.npmjs.com/package/@skillscraft/core) |
-| [`@skillscraft/cli`](packages/cli) | CLI tool | [![npm](https://img.shields.io/npm/v/@skillscraft/cli?style=flat-square)](https://www.npmjs.com/package/@skillscraft/cli) |
+| [`@skillscraft/spec`](packages/spec) | TypeScript types + JSON schemas | [![npm](https://img.shields.io/badge/npm-pre--release-orange?style=flat-square)](https://www.npmjs.com/package/@skillscraft/spec) |
+| [`@skillscraft/core`](packages/core) | Parser, validator, linter | [![npm](https://img.shields.io/badge/npm-pre--release-orange?style=flat-square)](https://www.npmjs.com/package/@skillscraft/core) |
+| [`@skillscraft/cli`](packages/cli) | CLI tool | [![npm](https://img.shields.io/badge/npm-pre--release-orange?style=flat-square)](https://www.npmjs.com/package/@skillscraft/cli) |
 
 ## Compatible Agents
 
 Skills built with this framework work with any agent that supports the Agent Skills format:
 
 Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, OpenHands, Goose, Roo Code, Amp, Letta, TRAE, Kiro, and more.
+
+## Specification
+
+The Agent Skills specification defines a portable format for giving AI agents new capabilities. See the [full specification reference](https://pratiyush.github.io/agentic-skills-framework/specification.html).
+
+### Adopters
+
+Skills built with this format are supported by: Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, Windsurf, Goose, Roo Code, Amp, OpenCode, Aider, Open-Claw, and more. See the [install command](https://pratiyush.github.io/agentic-skills-framework/tutorial.html) for the full target list.
 
 ## Marketplace
 

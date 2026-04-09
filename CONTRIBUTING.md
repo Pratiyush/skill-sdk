@@ -17,7 +17,7 @@ pnpm build
 pnpm test
 ```
 
-**Requirements:** Node.js >= 22, pnpm >= 10
+**Requirements:** Node.js >= 20, pnpm >= 10
 
 ## Project Structure
 
@@ -160,7 +160,6 @@ skill lint ./my-skill --fix  # Check best practices
 ## PR Guidelines
 
 - **One logical change per PR** — don't mix features and fixes
-- All commits authored by Pratiyush (project maintainer)
 - Tests must pass: `pnpm test`
 - Build must succeed: `pnpm build`
 - Follow existing code style
