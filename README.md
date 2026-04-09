@@ -24,7 +24,7 @@ The Agent Skills specification defines a simple, open format for giving AI agent
 |-------|---------|-------------|
 | **Spec** | `@skillscraft/spec` | TypeScript types and JSON schemas for the Agent Skills specification |
 | **Core** | `@skillscraft/core` | Parse, validate, and lint SKILL.md files |
-| **CLI** | `@skillscraft/cli` | `skill init`, `skill validate`, `skill lint` commands |
+| **CLI** | `@skillscraft/cli` | `skill init`, `skill validate`, `skill lint`, `skill install`, `skill uninstall` commands |
 
 ## Install
 
@@ -90,6 +90,27 @@ skill lint ./my-skill --fix            # Show fix suggestions
 | `defaults-over-menus` | warn | Clear default over option menus |
 | `gotchas-present` | info | Suggests gotchas section |
 
+### `skill install <path>`
+
+Install a skill for a specific agent.
+
+```bash
+skill install ./my-skill                          # Install for generic agent
+skill install ./my-skill -t claude                 # Install for Claude Code
+skill install github:owner/repo/path -t copilot    # Install from GitHub
+skill install ./my-skill --skip-validation          # Skip validation (WIP skills)
+```
+
+### `skill uninstall <name>`
+
+Remove a previously installed skill.
+
+```bash
+skill uninstall my-skill                # Uninstall from generic agent
+skill uninstall my-skill -t claude      # Uninstall from Claude Code
+skill uninstall my-skill -s user        # Uninstall from user scope
+```
+
 ## Programmatic API
 
 ```typescript
@@ -103,6 +124,11 @@ const validation = validateSkill(skill);
 if (!validation.valid) {
   console.log(validation.errors);
 }
+
+// Validate with custom severity overrides
+const result = validateSkill(skill, {
+  rules: { "metadata.valueType": "warning" }
+});
 
 // Lint for best practices
 const lint = lintSkill(skill);

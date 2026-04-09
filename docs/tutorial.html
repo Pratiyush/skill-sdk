@@ -127,10 +127,20 @@ console.log(parsed.body);                     <span class="c-comment">// Markdow
                 <tbody>
                   <tr><td><code>field</code></td><td><code>string</code></td><td><code>"name"</code>, <code>"description"</code></td></tr>
                   <tr><td><code>message</code></td><td><code>string</code></td><td><code>"name exceeds 64 characters"</code></td></tr>
-                  <tr><td><code>severity</code></td><td><code>"error"</code></td><td>Always <code>"error"</code> for validation.</td></tr>
+                  <tr><td><code>severity</code></td><td><code>"error" | "warning"</code></td><td>Configurable via options.</td></tr>
+                  <tr><td><code>rule</code></td><td><code>string</code></td><td><code>"name.required"</code>, <code>"metadata.valueType"</code></td></tr>
                 </tbody>
               </table>
             </div>
+            <h3>Severity overrides</h3>
+            <p>You can override severity for specific rules by passing an options object:</p>
+            <pre class="code-block"><code><span class="c-kw">const</span> result = validateSkill(parsed, {
+  rules: {
+    <span class="c-str">"metadata.valueType"</span>: <span class="c-str">"warning"</span>,
+    <span class="c-str">"frontmatter.unknownField"</span>: <span class="c-str">"off"</span>,
+  }
+});</code></pre>
+            <p>Valid severity values: <code>"error"</code>, <code>"warning"</code>, <code>"off"</code>. Rules set to <code>"off"</code> are excluded from results entirely.</p>
           </section>
 
           <!-- 4. Lint -->
