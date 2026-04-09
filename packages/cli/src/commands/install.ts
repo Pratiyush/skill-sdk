@@ -153,13 +153,14 @@ interface InstallOptions {
   target: string;
   scope: string;
   force?: boolean;
+  skipValidation?: boolean;
 }
 
 export async function installCommand(
   skillPath: string,
   options: InstallOptions
 ): Promise<void> {
-  const { target = "generic", scope = "project", force = false } = options;
+  const { target = "generic", scope = "project", force = false, skipValidation = false } = options;
 
   // Detect remote source (github: or https://github.com/...)
   let sourceDir: string;
@@ -191,23 +192,33 @@ export async function installCommand(
 
   // Validate the skill
   let skillName: string;
-  try {
-    const skill = await parseSkill(join(sourceDir, "SKILL.md"));
-    const result = validateSkill(skill);
+  if (!skipValidation) {
+    try {
+      const skill = await parseSkill(join(sourceDir, "SKILL.md"));
+      const result = validateSkill(skill);
 
-    skillName = skill.frontmatter.name;
+      skillName = skill.frontmatter.name;
 
-    if (!result.valid) {
-      console.error("Error: Skill has validation errors:");
-      for (const err of result.errors) {
-        console.error(`  - [${err.severity}] ${err.message}`);
+      if (!result.valid) {
+        console.error("Error: Skill has validation errors:");
+        for (const err of result.errors) {
+          console.error(`  - [${err.severity}] ${err.message}`);
+        }
+        console.error("\nFix validation errors before installing.");
+        process.exit(1);
       }
-      console.error("\nFix validation errors before installing.");
+    } catch (err) {
+      console.error(`Error: Failed to parse skill: ${(err as Error).message}`);
       process.exit(1);
     }
-  } catch (err) {
-    console.error(`Error: Failed to parse skill: ${(err as Error).message}`);
-    process.exit(1);
+  } else {
+    try {
+      const skill = await parseSkill(join(sourceDir, "SKILL.md"));
+      skillName = skill.frontmatter.name;
+    } catch (err) {
+      console.error(`Error: Failed to parse skill: ${(err as Error).message}`);
+      process.exit(1);
+    }
   }
 
   // Determine target directory

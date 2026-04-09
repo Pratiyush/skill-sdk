@@ -6,13 +6,18 @@ import type {
   ValidationError,
 } from "@skillscraft/spec";
 
+export interface ValidateOptions {
+  rules?: Record<string, "error" | "warning" | "off">;
+}
+
 /**
  * Validate a parsed skill against the Agent Skills specification.
  *
  * @param skill - A parsed skill from `parseSkill()`.
+ * @param options - Optional configuration for severity overrides.
  * @returns Validation result with errors and warnings.
  */
-export function validateSkill(skill: ParsedSkill): ValidationResult {
+export function validateSkill(skill: ParsedSkill, options?: ValidateOptions): ValidationResult {
   const errors: ValidationError[] = [];
   const { frontmatter, dirPath } = skill;
 
@@ -330,6 +335,29 @@ export function validateSkill(skill: ParsedSkill): ValidationResult {
         rule: "frontmatter.unknownField",
       });
     }
+  }
+
+  // Apply severity overrides from options
+  if (options?.rules) {
+    for (const err of errors) {
+      if (err.rule && err.rule in options.rules) {
+        const override = options.rules[err.rule];
+        if (override === "off") {
+          // Remove this error
+          continue;
+        }
+        err.severity = override;
+      }
+    }
+    // Filter out "off" rules
+    const filteredErrors = errors.filter(
+      (e) => !(e.rule && options.rules![e.rule] === "off")
+    );
+    return {
+      valid: filteredErrors.filter((e) => e.severity === "error").length === 0,
+      errors: filteredErrors,
+      skillPath: skill.filePath,
+    };
   }
 
   return {

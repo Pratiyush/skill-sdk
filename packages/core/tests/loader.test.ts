@@ -5,6 +5,11 @@ import { tmpdir } from "node:os";
 import { loadSkillManifest } from "../src/loader.js";
 import { filterFiles, loadSkillIgnore } from "../src/skillignore.js";
 
+/** Normalize backslashes for cross-platform test compatibility */
+function normalizePath(p: string): string {
+  return p.replace(/\\/g, "/");
+}
+
 const FIXTURES = join(import.meta.dirname, "fixtures");
 
 describe("loadSkillManifest", () => {
@@ -88,7 +93,7 @@ describe("loadSkillManifest", () => {
     it("includes nested files in the files list", async () => {
       const manifest = await loadSkillManifest(skillDir);
 
-      const paths = manifest.files.map((f) => f.relativePath).sort();
+      const paths = manifest.files.map((f) => normalizePath(f.relativePath)).sort();
       expect(paths).toContain("SKILL.md");
       expect(paths.some((p) => p.startsWith("scripts/"))).toBe(true);
       expect(paths.some((p) => p.startsWith("references/"))).toBe(true);
@@ -104,7 +109,7 @@ describe("loadSkillManifest", () => {
       const patterns = loadSkillIgnore(join(FIXTURES, "skill-with-ignore"));
       const filtered = filterFiles(manifest.files, patterns);
 
-      const filteredPaths = filtered.map((f) => f.relativePath);
+      const filteredPaths = filtered.map((f) => normalizePath(f.relativePath));
 
       // SKILL.md must remain (protected)
       expect(filteredPaths).toContain("SKILL.md");

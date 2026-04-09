@@ -6,6 +6,7 @@ declare const __CLI_VERSION__: string;
 import { validateCommand } from "./commands/validate.js";
 import { lintCommand } from "./commands/lint.js";
 import { installCommand } from "./commands/install.js";
+import { uninstallCommand } from "./commands/uninstall.js";
 import { listCommand } from "./commands/list.js";
 import { publishCommand } from "./commands/publish.js";
 import { validateAllCommand } from "./commands/validate-all.js";
@@ -47,7 +48,19 @@ program
   )
   .option("-s, --scope <scope>", "Install scope: project or user", "project")
   .option("-f, --force", "Overwrite existing installation")
+  .option("--skip-validation", "Skip skill validation during install")
   .action(installCommand);
+
+program
+  .command("uninstall <name>")
+  .description("Uninstall a previously installed skill")
+  .option(
+    "-t, --target <target>",
+    "Target agent: claude, copilot, codex, cursor, windsurf, aider, goose, gemini, junie, roo-code, opencode, amp, open-claw, generic",
+    "generic"
+  )
+  .option("-s, --scope <scope>", "Uninstall scope: project or user", "project")
+  .action(uninstallCommand);
 
 program
   .command("list")
