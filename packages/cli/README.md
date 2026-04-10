@@ -69,6 +69,6 @@ Apache-2.0
 
 ## Links
 
-- [Main repository](https://github.com/Pratiyush/agentic-skills-framework)
-- [Documentation](https://pratiyush.github.io/agentic-skills-framework)
-- [Marketplace](https://github.com/Pratiyush/skillscraft-hub)
+- [Main repository](https://github.com/Pratiyush/skill-sdk)
+- [Documentation](https://pratiyush.github.io/skill-sdk)
+- [Marketplace](https://github.com/Pratiyush/agent-catalog)

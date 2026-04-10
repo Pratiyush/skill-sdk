@@ -4,6 +4,7 @@ import { mkdir, copyFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { execSync } from "node:child_process";
 import { parseSkill, validateSkill, loadSkillIgnore, isIgnored } from "@skillscraft/core";
+import { resolveRegistry } from "../registry.js";
 
 /**
  * Target agent install paths.
@@ -114,12 +115,42 @@ function resolveRemoteSource(source: string): string {
     } else {
       subpath = parts.slice(2).join("/");
     }
+  } else if (source.startsWith("gitlab:")) {
+    // gitlab:owner/repo/path/to/skill
+    const rest = source.slice("gitlab:".length);
+    const parts = rest.split("/");
+    if (parts.length < 2) {
+      throw new Error(
+        `Invalid gitlab: source "${source}". Expected: gitlab:owner/repo[/path/to/skill]`
+      );
+    }
+    owner = parts[0];
+    repo = parts[1];
+    subpath = parts.slice(2).join("/");
+  } else if (source.startsWith("https://gitlab.com/")) {
+    // https://gitlab.com/owner/repo/-/tree/branch/path
+    const url = new URL(source);
+    const parts = url.pathname.replace(/^\//, "").split("/");
+    if (parts.length < 2) {
+      throw new Error(`Invalid GitLab URL "${source}"`);
+    }
+    owner = parts[0];
+    repo = parts[1].replace(/\.git$/, "");
+    if (parts[2] === "-" && parts[3] === "tree" && parts[4]) {
+      branch = parts[4];
+      subpath = parts.slice(5).join("/");
+    } else {
+      subpath = parts.slice(2).filter(p => p !== "-").join("/");
+    }
   } else {
     throw new Error(`Unsupported remote source: ${source}`);
   }
 
   const tmpDir = mkdtempSync(join(tmpdir(), "skillscraft-"));
-  const cloneUrl = `https://github.com/${owner}/${repo}.git`;
+  const isGitLab = source.includes("gitlab");
+  const cloneUrl = isGitLab
+    ? `https://gitlab.com/${owner}/${repo}.git`
+    : `https://github.com/${owner}/${repo}.git`;
 
   console.log(`Fetching ${owner}/${repo} (${branch})...`);
   try {
@@ -149,6 +180,31 @@ function resolveRemoteSource(source: string): string {
   return resolvedPath;
 }
 
+/**
+ * Resolve a skill name from the registry index.json.
+ * Returns a github: URL or HTTPS URL to the skill.
+ */
+async function resolveFromRegistry(name: string): Promise<string | null> {
+  const registry = resolveRegistry();
+  const indexUrl = `${registry}/index.json`;
+
+  try {
+    const response = await fetch(indexUrl);
+    if (!response.ok) return null;
+
+    const index = (await response.json()) as {
+      skills: Array<{ name: string; url: string }>;
+    };
+    const entry = index.skills.find((s) => s.name === name);
+    if (!entry) return null;
+
+    // Return the full URL to the skill
+    return `${registry}/${entry.url}`;
+  } catch {
+    return null;
+  }
+}
+
 interface InstallOptions {
   target: string;
   scope: string;
@@ -162,13 +218,38 @@ export async function installCommand(
 ): Promise<void> {
   const { target = "generic", scope = "project", force = false, skipValidation = false } = options;
 
-  // Detect remote source (github: or https://github.com/...)
-  let sourceDir: string;
+  // Check if this is a bare skill name (registry lookup)
+  const isPath =
+    skillPath.startsWith(".") ||
+    skillPath.startsWith("/") ||
+    skillPath.startsWith("~") ||
+    skillPath.includes("/");
   const isRemote =
     skillPath.startsWith("github:") ||
-    skillPath.startsWith("https://github.com/");
+    skillPath.startsWith("gitlab:") ||
+    skillPath.startsWith("https://github.com/") ||
+    skillPath.startsWith("https://gitlab.com/");
 
-  if (isRemote) {
+  if (!isPath && !isRemote) {
+    console.log(`Looking up "${skillPath}" in registry...`);
+    const registryUrl = await resolveFromRegistry(skillPath);
+    if (registryUrl) {
+      console.log(`Found in registry: ${registryUrl}`);
+      skillPath = registryUrl;
+    } else {
+      console.error(`Error: Skill "${skillPath}" not found in registry.`);
+      console.error(`Registry: ${resolveRegistry()}`);
+      console.error(
+        `\nProvide a direct path, github: URL, or gitlab: URL instead.`
+      );
+      process.exit(1);
+    }
+  }
+
+  // Detect remote source (github:, gitlab:, or URL)
+  let sourceDir: string;
+
+  if (isRemote || skillPath.startsWith("github:") || skillPath.startsWith("gitlab:") || skillPath.startsWith("https://")) {
     try {
       sourceDir = resolveRemoteSource(skillPath);
     } catch (err) {

@@ -37,12 +37,16 @@
     "@types/node": "^25.5.2"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Pratiyush/agentic-skills-framework",
+    "url": "https://github.com/Pratiyush/skill-sdk",
     "directory": "packages/cli"
   },
   "keywords": ["agent-skills", "cli", "skill-builder", "validator", "linter"]

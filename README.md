@@ -5,7 +5,7 @@
 **The TypeScript toolkit for building, validating, and shipping Agent Skills.**
 
 [![npm version](https://img.shields.io/badge/npm-pre--release-orange?style=flat-square)](https://www.npmjs.com/package/@skillscraft/core)
-[![CI](https://img.shields.io/github/actions/workflow/status/Pratiyush/agentic-skills-framework/ci.yml?style=flat-square)](https://github.com/Pratiyush/agentic-skills-framework/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/Pratiyush/skill-sdk/ci.yml?style=flat-square)](https://github.com/Pratiyush/skill-sdk/actions)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
@@ -185,22 +185,22 @@ Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrain
 
 ## Specification
 
-The Agent Skills specification defines a portable format for giving AI agents new capabilities. See the [full specification reference](https://pratiyush.github.io/agentic-skills-framework/specification.html).
+The Agent Skills specification defines a portable format for giving AI agents new capabilities. See the [full specification reference](https://pratiyush.github.io/skill-sdk/specification.html).
 
 ### Adopters
 
-Skills built with this format are supported by: Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, Windsurf, Goose, Roo Code, Amp, OpenCode, Aider, Open-Claw, and more. See the [install command](https://pratiyush.github.io/agentic-skills-framework/tutorial.html) for the full target list.
+Skills built with this format are supported by: Claude Code, GitHub Copilot, Cursor, OpenAI Codex, VS Code, Gemini CLI, JetBrains Junie, Windsurf, Goose, Roo Code, Amp, OpenCode, Aider, Open-Claw, and more. See the [install command](https://pratiyush.github.io/skill-sdk/tutorial.html) for the full target list.
 
 ## Marketplace
 
-Browse and install production skills from [SkillsCraft Hub](https://github.com/Pratiyush/skillscraft-hub).
+Browse and install production skills from [Agent Catalog](https://github.com/Pratiyush/agent-catalog).
 
 ## Links
 
-- [Specification Reference](https://pratiyush.github.io/agentic-skills-framework/specification.html)
-- [Concepts Guide](https://pratiyush.github.io/agentic-skills-framework/concepts.html)
-- [SDK Tutorial](https://pratiyush.github.io/agentic-skills-framework/tutorial.html)
-- [Documentation Site](https://pratiyush.github.io/agentic-skills-framework)
+- [Specification Reference](https://pratiyush.github.io/skill-sdk/specification.html)
+- [Concepts Guide](https://pratiyush.github.io/skill-sdk/concepts.html)
+- [SDK Tutorial](https://pratiyush.github.io/skill-sdk/tutorial.html)
+- [Documentation Site](https://pratiyush.github.io/skill-sdk)
 
 ## Contributing
 

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/Pratiyush/agentic-skills-framework/blob/master/packages/spec/schemas/skill.schema.json",
+  "$id": "https://github.com/Pratiyush/skill-sdk/blob/master/packages/spec/schemas/skill.schema.json",
   "title": "SkillFrontmatter",
   "description": "YAML frontmatter schema for SKILL.md files",
   "type": "object",

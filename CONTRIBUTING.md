@@ -6,8 +6,8 @@ Thanks for your interest in contributing! This guide covers how to contribute co
 
 ```bash
 # Clone and install
-git clone https://github.com/Pratiyush/agentic-skills-framework.git
-cd agentic-skills-framework
+git clone https://github.com/Pratiyush/skill-sdk.git
+cd skill-sdk
 pnpm install
 
 # Build all packages
