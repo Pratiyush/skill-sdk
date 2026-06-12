@@ -56,10 +56,11 @@ Install a skill for a specific agent or generically.
 skill install ./my-skill
 skill install ./my-skill --target claude --scope project
 skill install ./my-skill --target copilot --scope user --force
+skill install github:Xquik-dev/tweetclaw/skills/tweetclaw -t open-claw
 ```
 
 **Options:**
-- `-t, --target <target>` -- target agent: `claude`, `copilot`, `codex`, `generic` (default: `generic`)
+- `-t, --target <target>` -- target agent: `claude`, `copilot`, `codex`, `cursor`, `windsurf`, `aider`, `goose`, `gemini`, `junie`, `roo-code`, `opencode`, `amp`, `open-claw`, `generic` (default: `generic`)
 - `-s, --scope <scope>` -- install scope: `project` or `user` (default: `project`)
 - `-f, --force` -- overwrite existing installation
 

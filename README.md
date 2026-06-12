@@ -10,7 +10,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 Build, validate, lint, and publish Agent Skills that work across
-**Claude Code, GitHub Copilot, Cursor, OpenAI Codex, Gemini CLI, VS Code**, and 25+ more agents.
+**Claude Code, GitHub Copilot, Cursor, OpenAI Codex, Open-Claw, Gemini CLI, VS Code**, and 25+ more agents.
 
 </div>
 
@@ -110,6 +110,7 @@ Install a skill for a specific agent.
 skill install ./my-skill                          # Install for generic agent
 skill install ./my-skill -t claude                 # Install for Claude Code
 skill install github:owner/repo/path -t copilot    # Install from GitHub
+skill install github:Xquik-dev/tweetclaw/skills/tweetclaw -t open-claw
 skill install ./my-skill --skip-validation          # Skip validation (WIP skills)
 ```
 

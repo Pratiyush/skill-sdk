@@ -77,6 +77,8 @@ const TARGET_PATHS: Record<string, Record<string, string>> = {
   },
 };
 
+const SUPPORTED_TARGETS = Object.keys(TARGET_PATHS).join(", ");
+
 /**
  * Resolve remote sources (github:owner/repo/path, https://github.com/...) to a local directory.
  * Returns the local path to a temp clone containing the skill.
@@ -305,7 +307,7 @@ export async function installCommand(
   // Determine target directory
   if (!TARGET_PATHS[target]) {
     console.error(
-      `Error: Unknown target "${target}". Use: claude, copilot, codex, or generic.`
+      `Error: Unknown target "${target}". Use: ${SUPPORTED_TARGETS}.`
     );
     process.exit(1);
   }

@@ -27,6 +27,10 @@ const TARGET_PATHS: Record<string, Record<string, string>> = {
     project: ".codex/skills",
     user: "",
   },
+  "open-claw": {
+    project: ".openclaw/skills",
+    user: "",
+  },
   generic: {
     project: ".agents/skills",
     user: "",
@@ -117,6 +121,12 @@ describe("install command logic", () => {
       scope: "project",
     });
     expect(codexDest).toBe(join(tempDir, ".codex/skills", "my-skill"));
+
+    const openClawDest = computeDestDir(tempDir, "my-skill", {
+      target: "open-claw",
+      scope: "project",
+    });
+    expect(openClawDest).toBe(join(tempDir, ".openclaw/skills", "my-skill"));
 
     const genericDest = computeDestDir(tempDir, "my-skill", {
       target: "generic",
