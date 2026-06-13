@@ -18,7 +18,7 @@
     "@changesets/cli": "^2.30.0",
     "@playwright/test": "^1.59.1",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
-    "@typescript-eslint/parser": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.1",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
