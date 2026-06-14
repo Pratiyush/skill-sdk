@@ -29,7 +29,7 @@
     "tsup": "^8.4.0",
     "vitest": "^4.1.8",
     "eslint": "^9.24.0",
-    "typescript": "^5.8.0",
+    "typescript": "^6.0.3",
     "@types/node": "^25.6.0"
   },
   "engines": {
